@@ -1,27 +1,14 @@
 @echo off
-title MicroOS Terminal Launcher
-echo ============================================================
-echo   MICROOS v1.0 - Minimal Linux. Maximum Control.
-echo ============================================================
-echo.
+title MicroOS Launcher
+cd /d "C:\Users\M SRIVAS\.gemini\antigravity\scratch\MicroOS\web"
 
-REM 1. Clean up any stuck background VBoxSVC or orphaned VM processes
-echo [*] Clearing any stuck background VirtualBox services...
-taskkill /F /IM VirtualBoxVM.exe >nul 2>&1
-taskkill /F /IM VBoxSVC.exe >nul 2>&1
-timeout /t 1 /nobreak >nul
-
-REM 2. Start VirtualBox VM directly in user's desktop session
-set VBOX="C:\Program Files\Oracle\VirtualBox\VirtualBoxVM.exe"
-set VMNAME=MicroOS
-
-echo [*] Starting MicroOS Terminal in a full interactive GUI window...
-if exist %VBOX% (
-    start "" %VBOX% --startvm "%VMNAME%"
-) else (
-    start "" "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" startvm "%VMNAME%" --type gui
+netstat -ano | findstr :8080 >nul
+if %errorlevel% neq 0 (
+    echo Starting MicroOS server...
+    start /b python server.py
+    timeout /t 1 /nobreak >nul
 )
 
-echo [+] MicroOS window launched!
-echo     (You can now minimize or close this launcher window.)
-timeout /t 3 >nul
+echo Launching MicroOS Desktop Window...
+start "" "msedge.exe" --app=http://localhost:8080 --start-maximized
+exit

@@ -26,9 +26,9 @@ It delivers two production bootable editions:
 
 | Component | Format | Size | Description | Download Link |
 | :--- | :--- | :--- | :--- | :--- |
-| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://github.com/juug25btech19864-hash/MicroOS/raw/main/release/microos-gui.iso) |
-| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://github.com/juug25btech19864-hash/MicroOS/raw/main/release/microos-gui.vdi) |
-| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://github.com/juug25btech19864-hash/MicroOS/raw/main/release/microos.iso) |
+| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos-gui.iso) |
+| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos-gui.vdi) |
+| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos.iso) |
 
 ---
 
@@ -166,7 +166,7 @@ help                   # Complete command reference
 - **Department**: Artificial Intelligence & Machine Learning (AIML)
 - **Institution**: Jain University (Faculty of Engineering & Technology)
 - **Email**: `juug25btech19864@jainuniversity.ac.in`
-- **GitHub**: [juug25btech19864-hash](https://github.com/juug25btech19864-hash/MicroOS)
+- **GitHub**: [juug25btech19864-hash](https://github.com/juug25btech19864-hash/microOS2)
 - **Course**: Operating Systems Lab Project
 - **Hypervisor Validation**: Oracle VirtualBox
 - **License**: MIT License

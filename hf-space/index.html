@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MicroOS — Modern Desktop Environment</title>
+  <style>
+    :root {
+      --bg-midnight: #0b021a;
+      --topbar-bg: rgba(18, 8, 38, 0.75);
+      --dock-bg: rgba(15, 6, 32, 0.85);
+      --win-bg: rgba(18, 9, 36, 0.94);
+      --accent-magenta: #e91e63;
+      --accent-purple: #9c27b0;
+      --accent-cyan: #00e5ff;
+      --accent-blue: #2979ff;
+      --accent-orange: #ff9100;
+      --accent-green: #00e676;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-midnight);
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       WALLPAPER: 100% Fullscreen Seamless 3D Glowing Satin Wave
+       ═══════════════════════════════════════════════════════════════ */
+    .desktop-wallpaper {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: #080114;
+      overflow: hidden;
+    }
+    .wave-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       TOP BAR
+       ═══════════════════════════════════════════════════════════════ */
+    .topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 32px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 13px;
+      z-index: 1000;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 6px;
+      padding: 2px 8px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logo-btn:hover {
+      background: rgba(0, 229, 255, 0.3);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+    }
+    .options-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #e0e0e0;
+      transition: background 0.2s;
+    }
+    .options-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    .breadcrumb {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 420px;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .clock-pill {
+      background: rgba(156, 39, 176, 0.4);
+      border: 1px solid rgba(233, 30, 99, 0.4);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(156, 39, 176, 0.3);
+      cursor: pointer;
+    }
+    .icon-btn {
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+    }
+    .icon-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    .power-btn {
+      background: #e91e63;
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(233, 30, 99, 0.6);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       DESKTOP ICONS GRID (Left 2-Column Exact Layout)
+       ═══════════════════════════════════════════════════════════════ */
+    .desktop-area {
+      position: absolute;
+      top: 32px;
+      bottom: 48px;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(2, 175px);
+      grid-auto-flow: row;
+      gap: 8px 16px;
+      align-content: start;
+      overflow-y: auto;
+    }
+    .desktop-icon {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .desktop-icon:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+    .desktop-icon:active {
+      transform: scale(0.97);
+    }
+    .app-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .badge-white  { background: linear-gradient(135deg, #f5f5f5, #bdbdbd); color: #1a1a1a; }
+    .badge-blue   { background: linear-gradient(135deg, #2979ff, #1565c0); }
+    .badge-cyan   { background: linear-gradient(135deg, #00e5ff, #00b0ff); color: #00273a; }
+    .badge-purple { background: linear-gradient(135deg, #ab47bc, #7b1fa2); }
+    .badge-orange { background: linear-gradient(135deg, #ff9800, #f57c00); }
+    .badge-green  { background: linear-gradient(135deg, #00e676, #00c853); color: #003314; }
+    .badge-red    { background: linear-gradient(135deg, #ff1744, #d50000); }
+
+    .app-label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #f0f0f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FLOATING BOTTOM DOCK
+       ═══════════════════════════════════════════════════════════════ */
+    .dock {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: var(--dock-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 1000;
+    }
+    .dock-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dock-tile {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .dock-tile:hover {
+      transform: translateY(-4px) scale(1.15);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    }
+    .dock-tile:active {
+      transform: translateY(-1px) scale(1.05);
+    }
+    .tile-logo { background: linear-gradient(135deg, #e91e63, #ad1457); color: #fff; }
+    .tile-about { background: linear-gradient(135deg, #2979ff, #1565c0); color: #fff; }
+    .tile-files { background: linear-gradient(135deg, #ff9800, #ef6c00); color: #fff; }
+    .tile-term { background: linear-gradient(135deg, #00e5ff, #00b0ff); color: #002f3d; }
+    .tile-arcade { background: linear-gradient(135deg, #e91e63, #9c27b0); color: #fff; }
+    .tile-web { background: linear-gradient(135deg, #3f51b5, #1a237e); color: #fff; }
+    .tile-sysmon { background: linear-gradient(135deg, #00e676, #00bfa5); color: #003314; }
+    .tile-settings { background: linear-gradient(135deg, #7e57c2, #4527a0); color: #fff; }
+
+    .dock-sep {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 8px;
+    }
+
+    .dock-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ws-pill {
+      padding: 4px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.2s;
+    }
+    .ws-pill:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+    .ws-pill.active {
+      background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+      color: #fff;
+      border-color: rgba(233, 30, 99, 0.5);
+      box-shadow: 0 0 12px rgba(156, 39, 176, 0.5);
+    }
+    .grid-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 6px;
+    }
+    .grid-btn:hover {
+      background: rgba(0, 229, 255, 0.3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MODAL WINDOWS & APPLICATION FRAMES
+       ═══════════════════════════════════════════════════════════════ */
+    .window {
+      position: absolute;
+      top: 50px;
+      left: 100px;
+      width: 680px;
+      height: 480px;
+      background: var(--win-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(233, 30, 99, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(156, 39, 176, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 100;
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .window.open {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+    .window-header {
+      height: 38px;
+      background: linear-gradient(90deg, rgba(80, 16, 100, 0.8), rgba(30, 10, 50, 0.8));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      cursor: move;
+    }
+    .window-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .win-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: transparent;
+      transition: all 0.15s;
+    }
+    .win-btn:hover {
+      color: #000;
+    }
+    .btn-close { background: #ff5252; }
+    .btn-min   { background: #ffb142; }
+    .btn-max   { background: #2ed573; }
+
+    .window-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      font-size: 13px;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       OPTIONS DROPDOWN MENU
+       ═══════════════════════════════════════════════════════════════ */
+    .dropdown-menu {
+      position: absolute;
+      top: 36px;
+      left: 10px;
+      width: 250px;
+      background: rgba(22, 10, 42, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(233, 30, 99, 0.3);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+      padding: 6px 0;
+      z-index: 2000;
+      display: none;
+    }
+    .dropdown-menu.show { display: block; }
+    .menu-item {
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.15s;
+      color: #ddd;
+    }
+    .menu-item:hover {
+      background: linear-gradient(90deg, rgba(233, 30, 99, 0.3), rgba(156, 39, 176, 0.3));
+      color: #fff;
+    }
+    .menu-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 4px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       INTERACTIVE APPS STYLING
+       ═══════════════════════════════════════════════════════════════ */
+    /* Wi-Fi App */
+    .wifi-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(0, 230, 118, 0.35);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      transition: border-color 0.3s;
+    }
+    .wifi-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      background: rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .wifi-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(0, 229, 255, 0.3);
+    }
+    .wifi-item.connected {
+      background: rgba(0, 230, 118, 0.12);
+      border-color: rgba(0, 230, 118, 0.4);
+    }
+
+    /* Snake Game */
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    canvas {
+      border: 2px solid rgba(233, 30, 99, 0.5);
+      border-radius: 8px;
+      background: #000;
+    }
+
+    /* Terminal */
+    .terminal-output {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      color: #00e5ff;
+    }
+    .terminal-input-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      font-family: monospace;
+    }
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    /* Snap Store */
+    .store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .store-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .install-btn {
+      background: var(--accent-orange);
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      align-self: flex-start;
+      font-size: 12px;
+    }
+    .install-btn.installed {
+      background: rgba(0, 230, 118, 0.3);
+      color: #00e676;
+    }
+
+    /* Producer-Consumer Bounded Buffer */
+    .buffer-box {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .buffer-slot {
+      flex: 1;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-weight: 700;
+    }
+    .buffer-slot.occupied {
+      background: rgba(0, 230, 118, 0.2);
+      border-color: #00e676;
+      color: #00e676;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       DESKTOP WALLPAPER (100% Fullscreen Seamless 3D Wave Canvas)
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="desktop-wallpaper">
+    <canvas id="waveCanvas" class="wave-canvas"></canvas>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       ACRYLIC TOP BAR
+       ════════════════════════════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-btn" onclick="openWindow('about')">
+        <span>❖</span>
+        <span>MicroOS</span>
+      </div>
+      <div class="options-btn" onclick="toggleOptionsMenu(event)">
+        <span>Options</span>
+        <span style="font-size: 10px;">▼</span>
+      </div>
+      <div class="breadcrumb">
+        Desktop \ Files \ Documents \ Music \ Pictures \ Video
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="clock-pill" id="liveClock" onclick="openWindow('sysmon')">
+        Sat 21 Nov 21:05:13
+      </div>
+      <div class="icon-btn" title="Wi-Fi Quick Settings" onclick="openWindow('wifi')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.32c3.78 0 7.21 1.48 9.77 3.91L12 19.03 2.23 11.23C4.79 8.8 8.22 7.32 12 7.32z"/>
+        </svg>
+      </div>
+      <div class="icon-btn" title="Volume Mixer" onclick="openWindow('settings')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+      </div>
+      <div class="power-btn" title="Shut Down / Restart" onclick="openWindow('about')">
+        ✕
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       OPTIONS DROPDOWN MENU
+       ════════════════════════════════════════════════════════════════ -->
+  <div class="dropdown-menu" id="optionsMenu">
+    <div class="menu-item" onclick="openWindow('about'); closeOptionsMenu();">
+      <span>ℹ️</span> About MicroOS
+    </div>
+    <div class="menu-item" onclick="openWindow('arcade'); closeOptionsMenu();">
+      <span>🕹️</span> Retro Arcade Games
+    </div>
+    <div class="menu-item" onclick="openWindow('producer'); closeOptionsMenu();">
+      <span>⚙️</span> Producer-Consumer Lab
+    </div>
+    <div class="menu-item" onclick="openWindow('benchmark'); closeOptionsMenu();">
+      <span>⚡</span> Boot Time Benchmark
+    </div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" onclick="openWindow('wifi'); closeOptionsMenu();">
+      <span>📶</span> Wi-Fi Network Manager
+    </div>
+    <div class="menu-item" onclick="openWindow('terminal'); closeOptionsMenu();">
+      <span>💻</span> Developer Terminal Shell
+    </div>
+    <div class="menu-item" onclick="openWindow('settings'); closeOptionsMenu();">
+      <span>🎨</span> Personalization &amp; Themes
+    </div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" onclick="location.reload();">
+      <span>🔄</span> Restart Desktop Session
+    </div>
+    <div class="menu-item" style="color: #ff5252;" onclick="alert('System Shutdown simulated.');">
+      <span>🛑</span> Shut Down Machine
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       DESKTOP ICONS (Exact 2-Column Layout matching Reference)
+       ════════════════════════════════════════════════════════════════ -->
+  <main class="desktop-area">
+    <!-- ── Column 1 (Left, System & Lab Apps) ── -->
+    <div class="desktop-icon" onclick="openWindow('filesystem')">
+      <div class="app-badge badge-white">FS</div>
+      <div class="app-label">File System</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('home')">
+      <div class="app-badge badge-blue">DIR</div>
+      <div class="app-label">Home</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('terminal')">
+      <div class="app-badge badge-cyan">&gt;_</div>
+      <div class="app-label">Developer Terminal</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('sysmon')">
+      <div class="app-badge badge-cyan">SYS</div>
+      <div class="app-label">System Monitor</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('storage')">
+      <div class="app-badge badge-cyan">DRV</div>
+      <div class="app-label">Storage Explorer</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('settings')">
+      <div class="app-badge badge-purple">SET</div>
+      <div class="app-label">Settings</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('network')">
+      <div class="app-badge badge-cyan">NET</div>
+      <div class="app-label">Network Explorer</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('microkernel')">
+      <div class="app-badge badge-cyan">CPU</div>
+      <div class="app-label">Microkernel Architecture</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('hardware')">
+      <div class="app-badge badge-red">HW</div>
+      <div class="app-label">Hardware &amp; Devices</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('producer')">
+      <div class="app-badge badge-green">PRD</div>
+      <div class="app-label">Producer-Consumer</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('benchmark')">
+      <div class="app-badge badge-orange">BNK</div>
+      <div class="app-label">Boot Benchmark</div>
+    </div>
+
+    <!-- ── Column 2 (Right, Files, Web, Stores & Games) ── -->
+    <div class="desktop-icon" onclick="openWindow('files')">
+      <div class="app-badge badge-orange">DIR</div>
+      <div class="app-label">Files</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('browser')">
+      <div class="app-badge badge-orange">WEB</div>
+      <div class="app-label">Web Browser</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('apt')">
+      <div class="app-badge badge-green">PKG</div>
+      <div class="app-label">APT Package Mgr</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('wifi')">
+      <div class="app-badge badge-cyan">((o))</div>
+      <div class="app-label">Wi-Fi Manager</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('snapstore')">
+      <div class="app-badge badge-orange">SNP</div>
+      <div class="app-label">Snap Store</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('snake')">
+      <div class="app-badge badge-green">🐍</div>
+      <div class="app-label">Snake Game</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('arcade')">
+      <div class="app-badge badge-purple">🕹️</div>
+      <div class="app-label">Retro Arcade Hub</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('tetris')">
+      <div class="app-badge badge-blue">🧱</div>
+      <div class="app-label">Tetris Arcade</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('game2048')">
+      <div class="app-badge badge-orange">204</div>
+      <div class="app-label">2048 Puzzle</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('pong')">
+      <div class="app-badge badge-cyan">🏓</div>
+      <div class="app-label">Pong Arcade</div>
+    </div>
+    <div class="desktop-icon" onclick="openWindow('mines')">
+      <div class="app-badge badge-red">💣</div>
+      <div class="app-label">Minesweeper</div>
+    </div>
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       FLOATING BOTTOM DOCK & WORKSPACE PILLS
+       ════════════════════════════════════════════════════════════════ -->
+  <footer class="dock">
+    <div class="dock-left">
+      <div class="dock-tile tile-logo" title="Options" onclick="toggleOptionsMenu(event)">❖</div>
+      <div class="dock-tile tile-about" title="About MicroOS" onclick="openWindow('about')">M</div>
+      <div class="dock-tile tile-files" title="Files" onclick="openWindow('files')">📁</div>
+      <div class="dock-tile tile-term" title="Terminal" onclick="openWindow('terminal')">&gt;_</div>
+      <div class="dock-tile tile-arcade" title="Arcade Games" onclick="openWindow('arcade')">🎮</div>
+      <div class="dock-tile tile-web" title="Web Browser" onclick="openWindow('browser')">🌐</div>
+      <div class="dock-tile tile-sysmon" title="System Monitor" onclick="openWindow('sysmon')">📊</div>
+      <div class="dock-tile tile-settings" title="Settings" onclick="openWindow('settings')">⚙️</div>
+    </div>
+    <div class="dock-right">
+      <div class="ws-pill active" id="ws1" onclick="switchWorkspace(1)">Workspace 1</div>
+      <div class="ws-pill" id="ws2" onclick="switchWorkspace(2)">Workspace 2</div>
+      <div class="ws-pill" id="ws3" onclick="switchWorkspace(3)">Workspace 3</div>
+      <div class="ws-pill" id="ws4" onclick="switchWorkspace(4)">Workspace 4</div>
+      <div class="grid-btn" title="Task View / Show Desktop" onclick="minimizeAllWindows()">■</div>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       APPLICATION WINDOWS
+       ════════════════════════════════════════════════════════════════ -->
+
+  <!-- Wi-Fi Quick Settings Window -->
+  <div class="window" id="win-wifi" style="width: 620px; height: 560px;">
+    <div class="window-header">
+      <div class="window-title">📶 Wi-Fi Quick Settings &amp; Wireless Networks</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('wifi')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="wifi-card" id="wifiCard">
+        <div style="font-weight: 700; color: var(--accent-cyan); margin-bottom: 4px;">CURRENTLY CONNECTED NETWORK</div>
+        <div style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+          <span id="connectedSSID">Jain_Student</span>
+          <span id="connectedBadge" style="font-size: 11px; background: rgba(0,230,118,0.2); color: #00e676; padding: 2px 6px; border-radius: 4px;">CONNECTED, SECURED</span>
+        </div>
+        <div style="font-size: 12px; color: #aaa; margin-top: 6px;">
+          Signal: <b id="connSig" style="color: #00e676;">95% (-42 dBm, Optimal)</b> &nbsp;|&nbsp;
+          Band: <b id="connBand">5.0 GHz (Wi-Fi 6 802.11ax)</b> &nbsp;|&nbsp;
+          Link Rate: <b id="connRate">866.7 Mbps Full Duplex</b><br>
+          IP: <b id="connIP" style="color: var(--accent-cyan);">10.0.2.15</b> (Gateway: 10.0.2.2 &bull; DNS: 8.8.8.8) &nbsp;|&nbsp;
+          Hardware: <b>Realtek RTL8852BE WiFi 6 Controller</b>
+        </div>
+      </div>
+
+      <div style="font-weight: 700; margin: 12px 0 8px; color: #fff;">AVAILABLE NETWORKS (Click any to connect):</div>
+      <div id="wifiScanStatus" style="font-size: 11px; color: #888; margin-bottom: 6px;">🔄 Scanning for real networks…</div>
+      <div id="wifiList"></div>
+
+      <div style="margin-top: 16px; display: flex; gap: 8px;">
+        <button class="install-btn" style="background: rgba(255,255,255,0.1);" onclick="rescanWifi()">🔄 Rescan</button>
+        <button class="install-btn" style="background: rgba(255,82,82,0.3); color: #ff5252;" onclick="disconnectWifi()">Disconnect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snake Game Window -->
+  <div class="window" id="win-snake" style="width: 540px; height: 500px;">
+    <div class="window-header">
+      <div class="window-title">🐍 Snake Game — Micro Arcade</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('snake')">✕</div>
+      </div>
+    </div>
+    <div class="window-body" style="display: flex; flex-direction: column; align-items: center;">
+      <div style="display: flex; justify-content: space-between; width: 400px; margin-bottom: 8px; font-weight: 700;">
+        <div>Score: <span id="snakeScore" style="color: var(--accent-green);">0</span></div>
+        <div>High Score: <span id="snakeHighScore" style="color: var(--accent-orange);">0</span></div>
+      </div>
+      <canvas id="snakeCanvas" width="400" height="300"></canvas>
+      <div style="margin-top: 10px; font-size: 12px; color: #aaa;">
+        Use <b>Arrow Keys</b> or <b>W/A/S/D</b> to control the snake.
+      </div>
+      <button class="install-btn" style="margin-top: 8px;" onclick="initSnakeGame()">Restart Game</button>
+    </div>
+  </div>
+
+  <!-- Tetris Arcade Window -->
+  <div class="window" id="win-tetris" style="width: 480px; height: 560px;">
+    <div class="window-header">
+      <div class="window-title">🧱 Tetris Arcade — Classic Falling Blocks</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('tetris')">✕</div>
+      </div>
+    </div>
+    <div class="window-body" style="display: flex; flex-direction: column; align-items: center;">
+      <div style="display: flex; justify-content: space-between; width: 240px; margin-bottom: 6px; font-size: 13px; font-weight: 700;">
+        <div>Score: <span id="tetrisScore" style="color: var(--accent-cyan);">0</span></div>
+        <div>Lines: <span id="tetrisLines" style="color: var(--accent-green);">0</span></div>
+      </div>
+      <canvas id="tetrisCanvas" width="240" height="400"></canvas>
+      <div style="margin-top: 8px; font-size: 11px; color: #aaa; text-align: center;">
+        <b>Left/Right</b>: Move &bull; <b>Up / W</b>: Rotate &bull; <b>Down</b>: Soft Drop &bull; <b>Space</b>: Hard Drop
+      </div>
+      <button class="install-btn" style="margin-top: 6px;" onclick="initTetrisGame()">Restart Tetris</button>
+    </div>
+  </div>
+
+  <!-- Producer-Consumer Simulator Window -->
+  <div class="window" id="win-producer" style="width: 720px; height: 500px;">
+    <div class="window-header">
+      <div class="window-title">⚙️ POSIX Producer-Consumer Synchronization Simulator</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('producer')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+        <div style="font-weight: 700; color: var(--accent-cyan); font-size: 14px;">OPERATING SYSTEMS LAB: BOUNDED BUFFER SYNCHRONIZATION</div>
+        <div style="font-size: 12px; color: #aaa;">Author: <b>M. Srivas [25BTRCL143]</b> &bull; Department: <b>Artificial Intelligence &amp; Machine Learning (AIML)</b></div>
+        <div style="font-size: 11px; color: #888; margin-top: 4px;">Primitives: <code>pthread_mutex_t</code> + <code>pthread_cond_t (cond_not_empty, cond_not_full)</code></div>
+      </div>
+
+      <div style="font-weight: 600; margin-bottom: 6px;">Bounded Buffer Memory State (Capacity: 8 Slots):</div>
+      <div class="buffer-box" id="bufferSlots"></div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;">
+        <div class="wifi-card">
+          <div style="font-weight: 700; color: #00e676; margin-bottom: 4px;">Producer Thread Status</div>
+          <div style="font-size: 12px;">Items Produced: <b id="prodCount">0</b></div>
+          <div style="font-size: 12px;">Mutex Status: <b style="color: #00e676;" id="prodMutex">Active</b></div>
+        </div>
+        <div class="wifi-card">
+          <div style="font-weight: 700; color: #ff9100; margin-bottom: 4px;">Consumer Thread Status</div>
+          <div style="font-size: 12px;">Items Consumed: <b id="consCount">0</b></div>
+          <div style="font-size: 12px;">Mutex Status: <b style="color: #ff9100;" id="consMutex">Waiting</b></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; font-weight: 600;">Synchronization Event Log:</div>
+      <div id="pcLog" style="font-family: monospace; font-size: 11px; height: 110px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 8px; color: #aaa; margin-top: 4px;"></div>
+    </div>
+  </div>
+
+  <!-- Snap Store Window -->
+  <div class="window" id="win-snapstore">
+    <div class="window-header">
+      <div class="window-title">🛍️ Snap Store — Ubuntu Snap &amp; Debian APT Packages</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('snapstore')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+        <input type="text" placeholder="Search snaps and apt packages..." style="flex: 1; padding: 8px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; color: #fff; font-size: 13px;" onkeyup="filterStore(this.value)">
+      </div>
+      <div class="store-grid" id="storeGrid"></div>
+    </div>
+  </div>
+
+  <!-- Developer Terminal Window -->
+  <div class="window" id="win-terminal" style="width: 660px; height: 440px;">
+    <div class="window-header">
+      <div class="window-title">💻 Developer Terminal — /bin/sh</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('terminal')">✕</div>
+      </div>
+    </div>
+    <div class="window-body" style="background: rgba(8, 2, 18, 0.98); font-family: monospace; padding: 12px;">
+      <div class="terminal-output" id="termOutput">  __  __ _               ___  ___
+ |  \/  (_) ___ _ __ ___/ _ \/ __|
+ | |\/| | |/ __| '__/ _ \ | | \__ \
+ |_|  |_|_|\___/_|  \___/\___/|___/
+
+MicroOS v5.2 (x86_64 Long Mode)
+Type 'help' for available commands.
+
+srivas@microos:~$ </div>
+      <div class="terminal-input-row">
+        <span style="color: #00e676;">srivas@microos:~$</span>
+        <input type="text" class="terminal-input" id="termInput" autofocus onkeydown="handleTerminalKey(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- System Monitor Window -->
+  <div class="window" id="win-sysmon">
+    <div class="window-header">
+      <div class="window-title">📊 System Monitor &amp; Hardware Telemetry</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('sysmon')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="wifi-card">
+          <div style="font-weight: 700; color: var(--accent-cyan); margin-bottom: 6px;">CPU Load (13th Gen Intel Core i7-13650HX)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #fff;" id="cpuPercent">18.4%</div>
+          <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px;">
+            <div id="cpuBar" style="width: 18.4%; height: 100%; background: linear-gradient(90deg, #00e5ff, #e91e63);"></div>
+          </div>
+          <div style="font-size: 11px; color: #888; margin-top: 6px;">20 Logical Cores &bull; 4.90 GHz Turbo &bull; 1.28s Boot Time</div>
+        </div>
+        <div class="wifi-card">
+          <div style="font-weight: 700; color: #00e676; margin-bottom: 6px;">System RAM Allocation</div>
+          <div style="font-size: 24px; font-weight: 800; color: #fff;">673 MB <span style="font-size: 13px; font-weight: 400; color: #aaa;">/ 7793 MB</span></div>
+          <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px;">
+            <div style="width: 8.6%; height: 100%; background: #00e676;"></div>
+          </div>
+          <div style="font-size: 11px; color: #888; margin-top: 6px;">91.4% Headroom Free &bull; Lightweight Linux Footprint</div>
+        </div>
+      </div>
+
+      <div class="wifi-card" style="margin-top: 12px;">
+        <div style="font-weight: 700; color: var(--accent-orange); margin-bottom: 4px;">Live ISO Budget Metric</div>
+        <div style="font-size: 14px;">Size: <b>31.45 MB</b> / 50.0 MB Hard Limit <span style="color: #00e676; font-weight: 700;">[PASS: 62.9% USED]</span></div>
+        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 8px;">
+          <div style="width: 62.9%; height: 100%; background: #ff9100;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About MicroOS Window -->
+  <div class="window" id="win-about">
+    <div class="window-header">
+      <div class="window-title">ℹ️ About MicroOS</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('about')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="text-align: center; margin: 12px 0 16px;">
+        <div style="font-size: 28px; font-weight: 900; background: linear-gradient(135deg, #00e5ff, #e91e63); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          MICROOS
+        </div>
+        <div style="font-size: 13px; color: #aaa;">Modern Desktop Edition v5.2</div>
+      </div>
+      <div class="wifi-card">
+        <div><b>Kernel:</b> Linux 7.0.0-43-generic (Modular Micro-Profile)</div>
+        <div><b>Architecture:</b> x86_64 Dual Hybrid (BIOS &amp; UEFI Bootable)</div>
+        <div><b>Live ISO Size:</b> 31.45 MB (&lt; 50 MB budget, 17 MB headroom)</div>
+        <div><b>Lead Author:</b> M. Srivas [25BTRCL143] &bull; Dept: AIML</div>
+      </div>
+      <div style="font-size: 12px; color: #aaa; line-height: 1.8;">
+        &bull; <b>Retro Games:</b> Snake, Tetris, Pong, Minesweeper, 2048, Arcade Hub<br>
+        &bull; <b>Operating Systems Lab:</b> Producer-Consumer Mutex/Cond Simulator<br>
+        &bull; <b>Package Managers:</b> Ubuntu Snap Store &amp; Debian APT<br>
+        &bull; <b>Networking:</b> Host-grade Realtek RTL8852BE WiFi 6 Quick Settings
+      </div>
+    </div>
+  </div>
+
+  <!-- Retro Arcade Hub Window -->
+  <div class="window" id="win-arcade">
+    <div class="window-header">
+      <div class="window-title">🕹️ Retro Arcade Games Hub</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('arcade')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="font-weight: 700; margin-bottom: 12px; color: var(--accent-magenta);">CHOOSE A RETRO GAME TO PLAY:</div>
+      <div class="store-grid">
+        <div class="store-card" onclick="openWindow('snake'); closeWindow('arcade');" style="cursor: pointer;">
+          <div style="font-size: 24px;">🐍</div>
+          <b>Snake Game</b>
+          <div style="font-size: 11px; color: #aaa;">Classic arcade snake. Eat apples and grow!</div>
+          <button class="install-btn">Play Now</button>
+        </div>
+        <div class="store-card" onclick="openWindow('tetris'); closeWindow('arcade');" style="cursor: pointer;">
+          <div style="font-size: 24px;">🧱</div>
+          <b>Tetris Arcade</b>
+          <div style="font-size: 11px; color: #aaa;">Falling block puzzle game. Clear lines!</div>
+          <button class="install-btn">Play Now</button>
+        </div>
+        <div class="store-card" onclick="openWindow('game2048'); closeWindow('arcade');" style="cursor: pointer;">
+          <div style="font-size: 24px;">🔢</div>
+          <b>2048 Puzzle</b>
+          <div style="font-size: 11px; color: #aaa;">Join the numbers to reach the 2048 tile!</div>
+          <button class="install-btn">Play Now</button>
+        </div>
+        <div class="store-card" onclick="openWindow('pong'); closeWindow('arcade');" style="cursor: pointer;">
+          <div style="font-size: 24px;">🏓</div>
+          <b>Pong Arcade</b>
+          <div style="font-size: 11px; color: #aaa;">Retro table tennis paddle arcade.</div>
+          <button class="install-btn">Play Now</button>
+        </div>
+        <div class="store-card" onclick="openWindow('mines'); closeWindow('arcade');" style="cursor: pointer;">
+          <div style="font-size: 24px;">💣</div>
+          <b>Minesweeper</b>
+          <div style="font-size: 11px; color: #aaa;">Flag mines and uncover safe tiles.</div>
+          <button class="install-btn">Play Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Window -->
+  <div class="window" id="win-settings">
+    <div class="window-header">
+      <div class="window-title">⚙️ Settings &amp; Personalization</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('settings')">✕</div>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="wifi-card">
+        <div style="font-weight: 700; margin-bottom: 8px;">Theme &amp; Accent Lighting</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="install-btn" style="background: #e91e63;" onclick="setAccent('#e91e63')">Magenta</button>
+          <button class="install-btn" style="background: #00e5ff; color: #000;" onclick="setAccent('#00e5ff')">Cyan</button>
+          <button class="install-btn" style="background: #9c27b0;" onclick="setAccent('#9c27b0')">Purple</button>
+          <button class="install-btn" style="background: #00e676; color: #000;" onclick="setAccent('#00e676')">Emerald</button>
+        </div>
+      </div>
+      <div class="wifi-card">
+        <div style="font-weight: 700; margin-bottom: 8px;">Sound &amp; Volume Control</div>
+        <input type="range" min="0" max="100" value="100" style="width: 100%; accent-color: var(--accent-magenta);">
+        <div style="font-size: 11px; color: #888; margin-top: 4px;">Master Output: Intel HD Audio / AC97 (100%)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic Window (Files, Browser, etc.) -->
+  <div class="window" id="win-generic">
+    <div class="window-header">
+      <div class="window-title" id="genTitle">Application</div>
+      <div class="window-controls">
+        <div class="win-btn btn-close" onclick="closeWindow('generic')">✕</div>
+      </div>
+    </div>
+    <div class="window-body" id="genBody"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       JAVASCRIPT: Logic, Canvas Rendering & Interactive Games
+       ════════════════════════════════════════════════════════════════ -->
+  <script>
+    /* 1. Seamless 100% Fullscreen 3D Wave Wallpaper Canvas */
+    const waveCanvas = document.getElementById('waveCanvas');
+    const ctx = waveCanvas.getContext('2d');
+
+    function resizeWave() {
+      waveCanvas.width = window.innerWidth;
+      waveCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeWave);
+    resizeWave();
+
+    let wavePhase = 0;
+    function renderWave() {
+      const w = waveCanvas.width;
+      const h = waveCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      wavePhase += 0.015;
+
+      // 1. Base deep midnight background gradient across the entire screen
+      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+      bgGrad.addColorStop(0, '#0a0118');
+      bgGrad.addColorStop(0.35, '#13042b');
+      bgGrad.addColorStop(0.7, '#180436');
+      bgGrad.addColorStop(1, '#090117');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Ambient purple soft glow behind wave
+      const ambGrad = ctx.createRadialGradient(w * 0.7, h * 0.5, 50, w * 0.7, h * 0.5, w * 0.5);
+      ambGrad.addColorStop(0, 'rgba(156, 39, 176, 0.45)');
+      ambGrad.addColorStop(0.5, 'rgba(106, 27, 154, 0.2)');
+      ambGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = ambGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // 3. Sweeping S-curve satin wave (seamlessly integrated from right toward center)
+      const grad = ctx.createLinearGradient(w * 0.4, 0, w, h);
+      grad.addColorStop(0, 'rgba(156, 39, 176, 0.85)');
+      grad.addColorStop(0.35, 'rgba(233, 30, 99, 0.95)');
+      grad.addColorStop(0.65, 'rgba(255, 64, 129, 0.9)');
+      grad.addColorStop(1, 'rgba(63, 81, 181, 0.65)');
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.8, 0);
+
+      const cp1x = w * 0.48 + Math.sin(wavePhase) * 18;
+      const cp1y = h * 0.38;
+      const cp2x = w * 0.52 + Math.cos(wavePhase * 0.8) * 22;
+      const cp2y = h * 0.68;
+      const endx = w * 0.88;
+      const endy = h;
+
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endx, endy);
+      ctx.lineTo(w, h);
+      ctx.lineTo(w, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Glowing bright neon magenta core highlight ribbon
+      const coreGrad = ctx.createLinearGradient(w * 0.5, 0, w * 0.9, h);
+      coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+      coreGrad.addColorStop(0.4, 'rgba(255, 128, 171, 0.85)');
+      coreGrad.addColorStop(0.8, 'rgba(233, 30, 99, 0.4)');
+      coreGrad.addColorStop(1, 'transparent');
+
+      ctx.fillStyle = coreGrad;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.86, 0);
+      ctx.bezierCurveTo(cp1x + 45, cp1y - 30, cp2x + 70, cp2y + 20, endx, endy);
+      ctx.lineTo(w, endy);
+      ctx.lineTo(w, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      requestAnimationFrame(renderWave);
+    }
+    renderWave();
+
+    /* 2. Clock Updater */
+    function updateClock() {
+      const now = new Date();
+      const opts = { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+      document.getElementById('liveClock').innerText = now.toLocaleString('en-US', opts).replace(/,/g, '');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* 3. Window Manager */
+    const windows = ['wifi', 'snake', 'tetris', 'producer', 'snapstore', 'terminal', 'sysmon', 'about', 'arcade', 'settings', 'generic'];
+    let zCounter = 100;
+
+    function openWindow(id) {
+      const win = document.getElementById('win-' + id);
+      if (win) {
+        win.classList.add('open');
+        win.style.zIndex = ++zCounter;
+
+        if (id === 'snake' && !snakeRunning) initSnakeGame();
+        if (id === 'tetris' && !tetrisRunning) initTetrisGame();
+        if (id === 'wifi') loadRealWifi();
+      } else {
+        openGenericWindow(id);
+      }
+    }
+
+    function closeWindow(id) {
+      const win = document.getElementById('win-' + id);
+      if (win) win.classList.remove('open');
+    }
+
+    function minimizeAllWindows() {
+      windows.forEach(closeWindow);
+    }
+
+    // Draggable windows
+    document.querySelectorAll('.window').forEach(win => {
+      const header = win.querySelector('.window-header');
+      let isDragging = false, startX, startY, origX, origY;
+
+      header.addEventListener('mousedown', e => {
+        isDragging = true;
+        win.style.zIndex = ++zCounter;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = win.getBoundingClientRect();
+        origX = rect.left;
+        origY = rect.top;
+      });
+
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        win.style.left = Math.max(0, origX + (e.clientX - startX)) + 'px';
+        win.style.top = Math.max(32, origY + (e.clientY - startY)) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => { isDragging = false; });
+      win.addEventListener('mousedown', () => { win.style.zIndex = ++zCounter; });
+    });
+
+    // Generic Window Content
+    function openGenericWindow(app) {
+      const titles = {
+        filesystem: '📁 File System Explorer (/)',
+        home: '🏠 Home Directory (/root)',
+        files: '📂 Files (/root/Documents)',
+        storage: '💽 Storage Explorer & Disk Controller Map',
+        network: '🌐 Network Explorer (wlan0 / eth0)',
+        microkernel: '⚡ Microkernel Architecture',
+        hardware: '🖥️ Hardware & Device Dashboard',
+        benchmark: '⏱️ MicroOS Boot Time Benchmark',
+        browser: '🌐 Web Browser',
+        apt: '📦 APT Package Manager CLI',
+        game2048: '🔢 2048 Puzzle Arcade',
+        pong: '🏓 Pong Retro Arcade',
+        mines: '💣 Minesweeper Arcade'
+      };
+
+      const contents = {
+        filesystem: `<b>Root Filesystem Hierarchy:</b><br><br>
+          <div style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px;">
+            drwxr-xr-x &nbsp; bin/ &nbsp;&nbsp;&nbsp;&nbsp; (BusyBox user utilities)<br>
+            drwxr-xr-x &nbsp; sbin/ &nbsp;&nbsp;&nbsp; (Kernel daemons & init)<br>
+            drwxr-xr-x &nbsp; usr/ &nbsp;&nbsp;&nbsp;&nbsp; (Desktop environment, games, snap)<br>
+            drwxr-xr-x &nbsp; dev/ &nbsp;&nbsp;&nbsp;&nbsp; (mdev hardware device nodes)<br>
+            drwxr-xr-x &nbsp; proc/ &nbsp;&nbsp;&nbsp; (Virtual process tree)<br>
+            drwxr-xr-x &nbsp; sys/ &nbsp;&nbsp;&nbsp;&nbsp; (Sysfs hardware topology)<br>
+            drwx------ &nbsp; root/ &nbsp;&nbsp;&nbsp; (Root administrative home)
+          </div>`,
+        home: `<b>User Files (/root):</b><br><br>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div class="wifi-card">📁 Documents/</div>
+            <div class="wifi-card">📁 Downloads/</div>
+            <div class="wifi-card">📁 Music/</div>
+            <div class="wifi-card">📁 Pictures/</div>
+            <div class="wifi-card">📁 Videos/</div>
+            <div class="wifi-card">📄 lab_report.pdf</div>
+          </div>`,
+        storage: `<b>Detected Storage Drives & Mounts:</b><br><br>
+          <div class="wifi-card">
+            <b>/dev/sda</b> — SATA Virtual Disk (AHCI Primary) : 722 MB (Read-Only ISO Base)<br>
+            <b>/dev/sdb</b> — Swap Storage Partition : 97 MB Active<br>
+            <b>/dev/sdc</b> — Persistent Debian Overlay : 2048 MB (Read-Write Ext4)<br>
+            <b>/dev/sdd</b> — Secondary NVMe Mass Storage : 1024 GB (1 TB)
+          </div>`,
+        browser: `<b>Web Portal:</b><br><br>
+          <input type="text" value="https://duckduckgo.com" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #fff; margin-bottom: 12px;">
+          <div class="wifi-card">
+            <h3>DuckDuckGo Search</h3>
+            <p style="color: #aaa; margin-top: 4px;">Search the web freely and anonymously.</p>
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+              <a href="https://packages.debian.org" target="_blank" class="install-btn">Debian Packages</a>
+              <a href="https://snapcraft.io" target="_blank" class="install-btn">Snapcraft Store</a>
+              <a href="https://github.com" target="_blank" class="install-btn">GitHub</a>
+            </div>
+          </div>`
+      };
+
+      document.getElementById('genTitle').innerText = titles[app] || 'Application';
+      document.getElementById('genBody').innerHTML = contents[app] || `<div class="wifi-card">Application <b>${app}</b> is active and running under MicroOS.</div>`;
+      openWindow('generic');
+    }
+
+    /* 4. Options Menu */
+    const optionsMenu = document.getElementById('optionsMenu');
+    function toggleOptionsMenu(e) {
+      e.stopPropagation();
+      optionsMenu.classList.toggle('show');
+    }
+    function closeOptionsMenu() { optionsMenu.classList.remove('show'); }
+    window.addEventListener('click', closeOptionsMenu);
+
+    /* 5. Workspaces */
+    function switchWorkspace(n) {
+      document.querySelectorAll('.ws-pill').forEach((p, i) => {
+        p.classList.toggle('active', i + 1 === n);
+      });
+    }
+
+    /* 6. Wi-Fi Manager Logic — AUTO-DETECT from Windows host via /api/wifi */
+    let networks = [];
+    let currentConnected = null;
+
+    function sigColor(sig) { return sig > 70 ? '#00e676' : sig > 50 ? '#ff9100' : '#ff5252'; }
+
+    function updateConnectedCard() {
+      const net = networks.find(n => n.name === currentConnected);
+      const offline = !net;
+      const card = document.getElementById('wifiCard');
+      const badge = document.getElementById('connectedBadge');
+      document.getElementById('connectedSSID').innerText = offline ? (currentConnected === '__offline__' ? 'Disconnected' : 'Detecting…') : net.name;
+      if (offline) {
+        badge.textContent = currentConnected === '__offline__' ? 'OFFLINE' : 'SCANNING…';
+        badge.style.background = 'rgba(255,82,82,0.2)';
+        badge.style.color = '#ff5252';
+        card.style.borderColor = 'rgba(255,82,82,0.4)';
+        document.getElementById('connSig').innerHTML   = '—';
+        document.getElementById('connBand').innerHTML  = '—';
+        document.getElementById('connRate').innerHTML  = '—';
+        document.getElementById('connIP').innerHTML    = '—';
+      } else {
+        const secured = net.sec && !net.sec.toLowerCase().includes('open');
+        badge.textContent = secured ? 'CONNECTED, SECURED' : 'CONNECTED, OPEN';
+        badge.style.background = secured ? 'rgba(0,230,118,0.2)' : 'rgba(255,152,0,0.2)';
+        badge.style.color      = secured ? '#00e676' : '#ff9100';
+        card.style.borderColor = 'rgba(0,230,118,0.35)';
+        document.getElementById('connSig').style.color = sigColor(net.signal);
+        document.getElementById('connSig').innerHTML   = `${net.signal}% (${net.dbm || ''})`;
+        document.getElementById('connBand').innerHTML  = net.bandFull || net.band || '—';
+        document.getElementById('connRate').innerHTML  = net.rate || '—';
+        document.getElementById('connIP').innerHTML    = net.ip || '(DHCP)';
+      }
+    }
+
+    function renderWifiList() {
+      const container = document.getElementById('wifiList');
+      if (!networks.length) {
+        container.innerHTML = '<div style="color:#aaa;padding:16px;text-align:center;">🔄 Scanning for networks…</div>';
+        return;
+      }
+      container.innerHTML = networks.map(n => `
+        <div class="wifi-item ${n.name === currentConnected ? 'connected' : ''}" onclick="connectWifi('${n.name}')">
+          <div>
+            <b>${n.name}</b>
+            <div style="font-size: 11px; color: #aaa;">${n.band || ''} &bull; ${n.sec || 'WPA2'}</div>
+          </div>
+          <div style="font-weight: 700; color: ${sigColor(n.signal)};">
+            ${n.signal}% [${n.name === currentConnected ? '✓ Connected' : 'In Range'}]
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadRealWifi() {
+      try {
+        const res = await fetch('/api/wifi', { cache: 'no-store' });
+        if (!res.ok) throw new Error('API unavailable');
+        const data = await res.json();
+
+        // Use real scanned networks directly from Windows
+        const avail = (data.available || []).map(n => ({
+          name:     n.ssid,
+          signal:   n.signal,
+          band:     n.band,
+          bandFull: n.bandFull,
+          sec:      n.sec,
+          rate:     n.rate,
+          dbm:      n.dbm,
+          ip:       null,
+        }));
+
+        if (data.connected) {
+          const c = data.connected;
+          currentConnected = c.ssid;
+          const idx = avail.findIndex(n => n.name === c.ssid);
+          const connNet = {
+            name:     c.ssid,
+            signal:   c.signal,
+            band:     c.band,
+            bandFull: c.bandFull,
+            sec:      c.sec,
+            rate:     c.rate,
+            dbm:      c.dbm,
+            ip:       '(Host Connected)',
+          };
+          if (idx >= 0) avail[idx] = connNet;
+          else avail.unshift(connNet);
+        }
+
+        networks = avail;
+        renderWifiList();
+        updateConnectedCard();
+
+        document.getElementById('wifiScanStatus').textContent =
+          `Live Scan: ${new Date().toLocaleTimeString()} — ${networks.length} network(s) visible in range`;
+      } catch (err) {
+        document.getElementById('wifiScanStatus').textContent = `Waiting for network scan…`;
+      }
+    }
+
+    function connectWifi(name) {
+      currentConnected = name;
+      updateConnectedCard();
+      renderWifiList();
+    }
+    function disconnectWifi() {
+      currentConnected = '__offline__';
+      updateConnectedCard();
+      renderWifiList();
+    }
+    async function rescanWifi() {
+      document.getElementById('wifiScanStatus').textContent = '🔄 Scanning…';
+      networks = [];
+      renderWifiList();
+      await loadRealWifi();
+    }
+
+    // Auto-load real Wi-Fi on page start and refresh every 5s for real-time auto-sync
+    loadRealWifi();
+    setInterval(loadRealWifi, 5000);
+
+    /* 7. Snake Game Logic */
+    let snakeCanvas = document.getElementById('snakeCanvas');
+    let sCtx = snakeCanvas.getContext('2d');
+    let snake = [{x: 10, y: 10}], food = {x: 15, y: 10}, dx = 1, dy = 0, score = 0, highScore = 0;
+    let snakeInterval = null, snakeRunning = false;
+
+    function initSnakeGame() {
+      if (snakeInterval) clearInterval(snakeInterval);
+      snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+      dx = 1; dy = 0; score = 0;
+      document.getElementById('snakeScore').innerText = score;
+      placeFood();
+      snakeRunning = true;
+      snakeInterval = setInterval(gameStep, 90);
+    }
+
+    function placeFood() {
+      food.x = Math.floor(Math.random() * 20);
+      food.y = Math.floor(Math.random() * 15);
+    }
+
+    function gameStep() {
+      const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+      if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 15 || snake.some(p => p.x === head.x && p.y === head.y)) {
+        clearInterval(snakeInterval);
+        snakeRunning = false;
+        alert('Game Over! Your score: ' + score);
+        return;
+      }
+
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        if (score > highScore) { highScore = score; document.getElementById('snakeHighScore').innerText = highScore; }
+        document.getElementById('snakeScore').innerText = score;
+        placeFood();
+      } else {
+        snake.pop();
+      }
+
+      // Draw
+      sCtx.fillStyle = '#080214';
+      sCtx.fillRect(0, 0, 400, 300);
+
+      sCtx.fillStyle = '#00e676';
+      snake.forEach(p => sCtx.fillRect(p.x * 20, p.y * 20, 18, 18));
+
+      sCtx.fillStyle = '#ff1744';
+      sCtx.fillRect(food.x * 20, food.y * 20, 18, 18);
+    }
+
+    window.addEventListener('keydown', e => {
+      if (!snakeRunning) return;
+      if ((e.key === 'ArrowUp' || e.key === 'w') && dy === 0) { dx = 0; dy = -1; }
+      else if ((e.key === 'ArrowDown' || e.key === 's') && dy === 0) { dx = 0; dy = 1; }
+      else if ((e.key === 'ArrowLeft' || e.key === 'a') && dx === 0) { dx = -1; dy = 0; }
+      else if ((e.key === 'ArrowRight' || e.key === 'd') && dx === 0) { dx = 1; dy = 0; }
+    });
+
+    /* 8. Tetris Game Logic */
+    const tCanvas = document.getElementById('tetrisCanvas');
+    const tCtx = tCanvas.getContext('2d');
+    const COLS = 10, ROWS = 20, BLOCK = 20;
+    let board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+    let tScore = 0, tLines = 0, tetrisInterval = null, tetrisRunning = false;
+    const SHAPES = [
+      [[1,1,1,1]], // I
+      [[1,1],[1,1]], // O
+      [[0,1,0],[1,1,1]], // T
+      [[1,0,0],[1,1,1]], // L
+      [[0,0,1],[1,1,1]], // J
+      [[0,1,1],[1,1,0]], // S
+      [[1,1,0],[0,1,1]]  // Z
+    ];
+    let curPiece = null, curX = 3, curY = 0;
+
+    function newPiece() {
+      const idx = Math.floor(Math.random() * SHAPES.length);
+      curPiece = SHAPES[idx];
+      curX = Math.floor((COLS - curPiece[0].length) / 2);
+      curY = 0;
+      if (collides(curX, curY, curPiece)) {
+        clearInterval(tetrisInterval);
+        tetrisRunning = false;
+        alert('Tetris Game Over! Score: ' + tScore);
+      }
+    }
+
+    function collides(x, y, p) {
+      for (let r = 0; r < p.length; r++) {
+        for (let c = 0; c < p[r].length; c++) {
+          if (p[r][c]) {
+            let nx = x + c, ny = y + r;
+            if (nx < 0 || nx >= COLS || ny >= ROWS || (ny >= 0 && board[ny][nx])) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function merge() {
+      for (let r = 0; r < curPiece.length; r++) {
+        for (let c = 0; c < curPiece[r].length; c++) {
+          if (curPiece[r][c]) board[curY + r][curX + c] = 1;
+        }
+      }
+      // Check lines
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (board[r].every(v => v !== 0)) {
+          board.splice(r, 1);
+          board.unshift(Array(COLS).fill(0));
+          tScore += 100;
+          tLines += 1;
+          document.getElementById('tetrisScore').innerText = tScore;
+          document.getElementById('tetrisLines').innerText = tLines;
+          r++;
+        }
+      }
+      newPiece();
+    }
+
+    function drawTetris() {
+      tCtx.fillStyle = '#080214';
+      tCtx.fillRect(0, 0, 240, 400);
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (board[r][c]) {
+            tCtx.fillStyle = '#00e5ff';
+            tCtx.fillRect(c * BLOCK, r * BLOCK, BLOCK - 1, BLOCK - 1);
+          }
+        }
+      }
+      if (curPiece) {
+        tCtx.fillStyle = '#ff4081';
+        for (let r = 0; r < curPiece.length; r++) {
+          for (let c = 0; c < curPiece[r].length; c++) {
+            if (curPiece[r][c]) {
+              tCtx.fillRect((curX + c) * BLOCK, (curY + r) * BLOCK, BLOCK - 1, BLOCK - 1);
+            }
+          }
+        }
+      }
+    }
+
+    function tetrisStep() {
+      if (!collides(curX, curY + 1, curPiece)) {
+        curY++;
+      } else {
+        merge();
+      }
+      drawTetris();
+    }
+
+    function initTetrisGame() {
+      if (tetrisInterval) clearInterval(tetrisInterval);
+      board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+      tScore = 0; tLines = 0;
+      document.getElementById('tetrisScore').innerText = 0;
+      document.getElementById('tetrisLines').innerText = 0;
+      newPiece();
+      tetrisRunning = true;
+      tetrisInterval = setInterval(tetrisStep, 400);
+      drawTetris();
+    }
+
+    window.addEventListener('keydown', e => {
+      if (!tetrisRunning) return;
+      if (e.key === 'ArrowLeft' && !collides(curX - 1, curY, curPiece)) curX--;
+      else if (e.key === 'ArrowRight' && !collides(curX + 1, curY, curPiece)) curX++;
+      else if (e.key === 'ArrowDown' && !collides(curX, curY + 1, curPiece)) curY++;
+      else if (e.key === 'ArrowUp' || e.key === 'w') {
+        const rotated = curPiece[0].map((_, i) => curPiece.map(row => row[i]).reverse());
+        if (!collides(curX, curY, rotated)) curPiece = rotated;
+      } else if (e.key === ' ') {
+        while (!collides(curX, curY + 1, curPiece)) curY++;
+        merge();
+      }
+      drawTetris();
+    });
+
+    /* 9. Producer-Consumer Simulation Logic */
+    let buffer = [null, null, 404, 370, 261, 962, null, null];
+    let prodCount = 14, consCount = 10;
+    const bufContainer = document.getElementById('bufferSlots');
+    const pcLog = document.getElementById('pcLog');
+
+    function renderBuffer() {
+      bufContainer.innerHTML = buffer.map((item, idx) => `
+        <div class="buffer-slot ${item !== null ? 'occupied' : ''}">
+          <span style="font-size: 13px;">${item !== null ? item : '--'}</span>
+          <span style="font-size: 9px; color: #888;">Slot ${idx}</span>
+        </div>
+      `).join('');
+    }
+    renderBuffer();
+
+    setInterval(() => {
+      const isProduce = Math.random() > 0.45;
+      const emptyIdx = buffer.indexOf(null);
+      const fullIdx = buffer.findIndex(x => x !== null);
+
+      if (isProduce && emptyIdx !== -1) {
+        const item = Math.floor(Math.random() * 900) + 100;
+        buffer[emptyIdx] = item;
+        prodCount++;
+        document.getElementById('prodCount').innerText = prodCount;
+        pcLog.innerHTML = `[${new Date().toLocaleTimeString()}] <span style="color:#00e676;">[Producer #1]</span> Inserted item <b>${item}</b> into slot ${emptyIdx}<br>` + pcLog.innerHTML;
+      } else if (!isProduce && fullIdx !== -1) {
+        const item = buffer[fullIdx];
+        buffer[fullIdx] = null;
+        consCount++;
+        document.getElementById('consCount').innerText = consCount;
+        pcLog.innerHTML = `[${new Date().toLocaleTimeString()}] <span style="color:#ff9100;">[Consumer #2]</span> Removed item <b>${item}</b> from slot ${fullIdx}<br>` + pcLog.innerHTML;
+      }
+      renderBuffer();
+    }, 1800);
+
+    /* 10. Snap Store Logic */
+    const storePackages = [
+      { name: 'htop', ver: '3.2.2', cat: 'System', desc: 'Interactive real-time process viewer', rating: '★★★★★' },
+      { name: 'neofetch', ver: '7.1.0', cat: 'Utilities', desc: 'Fast CLI system information tool', rating: '★★★★★' },
+      { name: 'nano', ver: '7.2', cat: 'Editors', desc: 'User-friendly terminal text editor', rating: '★★★★☆' },
+      { name: 'vim', ver: '9.0', cat: 'Editors', desc: 'Advanced programmer text editor', rating: '★★★★★' },
+      { name: 'tmux', ver: '3.3a', cat: 'System', desc: 'Terminal multiplexer with workspaces', rating: '★★★★★' },
+      { name: 'curl', ver: '8.5.0', cat: 'Network', desc: 'Command line web transfer tool', rating: '★★★★★' }
+    ];
+
+    function renderStore(pkgs) {
+      document.getElementById('storeGrid').innerHTML = pkgs.map(p => `
+        <div class="store-card">
+          <div>
+            <b>${p.name}</b> <span style="font-size: 11px; color: #aaa;">v${p.ver}</span>
+            <div style="font-size: 11px; color: var(--accent-orange); margin: 2px 0;">${p.rating} &bull; ${p.cat}</div>
+            <div style="font-size: 11px; color: #ccc;">${p.desc}</div>
+          </div>
+          <button class="install-btn" onclick="this.classList.toggle('installed'); this.innerText = this.classList.contains('installed') ? '✓ Installed' : 'Install';">Install</button>
+        </div>
+      `).join('');
+    }
+    renderStore(storePackages);
+
+    function filterStore(query) {
+      const q = query.toLowerCase();
+      renderStore(storePackages.filter(p => p.name.includes(q) || p.desc.toLowerCase().includes(q)));
+    }
+
+    /* 11. Terminal Logic — Full interactive Linux shell */
+    const termHistory = [];
+    let termHistIdx = -1;
+    let termCwd = '/home/srivas';
+    let termUser = 'srivas';
+    let termUid = 1000;
+    const termFS = {
+      '/': ['bin','boot','dev','etc','home','lib','mnt','proc','root','sbin','sys','tmp','usr','var'],
+      '/home': ['srivas'],
+      '/home/srivas': ['Desktop','Documents','Downloads','Music','Pictures','Videos','.profile','.bashrc'],
+      '/root': ['Desktop','Documents','.profile'],
+      '/etc': ['passwd','group','hostname','resolv.conf','profile','hosts','network','init.d'],
+      '/usr': ['bin','lib','share','local','games'],
+      '/usr/bin': ['whoami','who','ping','ifconfig','ip','grep','find','awk','sed','vi','nano','top','htop','ps','df','du','free','wget','curl','ssh','tar','gzip','chmod','chown','id','which','env','cat','ls','cp','mv','rm','mkdir','touch','echo','date','uname','hostname','uptime','clear','history','neofetch','netstat','nslookup','sudo','su'],
+      '/bin': ['sh','ash','busybox','cat','ls','cp','mv','rm','mkdir','echo','date','sleep','ps','kill','mount','umount','ping'],
+      '/tmp': [],
+      '/proc': ['cpuinfo','meminfo','uptime','version','net','partitions'],
+      '/dev': ['sda','sda1','tty','tty1','null','zero','urandom'],
+    };
+
+    function termPrint(out, text) { out.innerText += text + '\n'; }
+
+    function getPrompt() {
+      const displayDir = termCwd === '/home/srivas' ? '~' : (termCwd === '/root' && termUser === 'root' ? '~' : termCwd);
+      const symbol = termUser === 'root' ? '#' : '$';
+      return `${termUser}@microos:${displayDir}${symbol} `;
+    }
+
+    function resolvePath(p) {
+      if (!p || p === '~') return termUser === 'root' ? '/root' : '/home/srivas';
+      if (p.startsWith('~/')) return (termUser === 'root' ? '/root/' : '/home/srivas/') + p.slice(2);
+      if (!p.startsWith('/')) return (termCwd.replace(/\/$/, '') + '/' + p).replace(/\/+/g, '/');
+      return p.replace(/\/+/g,'/').replace(/\/$/, '') || '/';
+    }
+
+    function handleTerminalKey(e) {
+      const input = document.getElementById('termInput');
+      if (e.key === 'ArrowUp') {
+        if (termHistIdx < termHistory.length - 1) termHistIdx++;
+        input.value = termHistory[termHistIdx] || '';
+        e.preventDefault(); return;
+      }
+      if (e.key === 'ArrowDown') {
+        if (termHistIdx > 0) termHistIdx--;
+        else termHistIdx = -1;
+        input.value = termHistIdx >= 0 ? termHistory[termHistIdx] : '';
+        e.preventDefault(); return;
+      }
+      if (e.key !== 'Enter') return;
+
+      const raw = input.value.trim();
+      const out = document.getElementById('termOutput');
+      const prompt = getPrompt();
+
+      if (!raw) {
+        out.innerText += prompt + '\n';
+        input.value = '';
+        out.parentElement.scrollTop = out.parentElement.scrollHeight;
+        return;
+      }
+
+      termHistory.unshift(raw);
+      termHistIdx = -1;
+      out.innerText += prompt + raw + '\n';
+
+      let tokens = raw.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || [];
+      let isSudo = false;
+      if (tokens[0] === 'sudo') {
+        isSudo = true;
+        tokens.shift();
+      }
+
+      const effectiveUser = isSudo ? 'root' : termUser;
+      const cmd = (tokens[0] || '').toLowerCase();
+      const args = tokens.slice(1).map(a => a.replace(/^['"]|['"]$/g, ''));
+      const now = new Date();
+      const upMins = Math.max(1, Math.floor((now - new Date(now.toDateString())) / 60000));
+
+      // Handle 'who am i' directly (multi-word match)
+      if (cmd === 'who' && args[0] === 'am' && args[1] === 'i') {
+        termPrint(out, effectiveUser);
+        input.value = '';
+        out.parentElement.scrollTop = out.parentElement.scrollHeight;
+        return;
+      }
+
+      switch(cmd) {
+        case 'clear':
+          out.innerText = '';
+          break;
+
+        case 'whoami':
+          termPrint(out, effectiveUser);
+          break;
+
+        case 'who':
+          termPrint(out, `${effectiveUser}    tty1         ${now.toDateString().slice(4)} ${now.toTimeString().slice(0,5)}`);
+          break;
+
+        case 'id':
+          if (effectiveUser === 'root') {
+            termPrint(out, 'uid=0(root) gid=0(root) groups=0(root),4(adm),10(wheel)');
+          } else {
+            termPrint(out, 'uid=1000(srivas) gid=1000(srivas) groups=1000(srivas),4(adm),24(cdrom),27(sudo),100(users)');
+          }
+          break;
+
+        case 'su':
+          termUser = 'root';
+          termUid = 0;
+          termPrint(out, 'Password: ');
+          termPrint(out, 'Switched to root session.');
+          break;
+
+        case 'hostname':
+          termPrint(out, 'microos');
+          break;
+
+        case 'uname':
+          if (args.includes('-a')) termPrint(out, 'Linux microos 7.0.0-43-generic #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux');
+          else if (args.includes('-r')) termPrint(out, '7.0.0-43-generic');
+          else if (args.includes('-s')) termPrint(out, 'Linux');
+          else if (args.includes('-m')) termPrint(out, 'x86_64');
+          else if (args.includes('-n')) termPrint(out, 'microos');
+          else termPrint(out, 'Linux');
+          break;
+
+        case 'echo':
+          termPrint(out, args.join(' ').replace(/\$USER/g, effectiveUser).replace(/\$HOME/g, effectiveUser === 'root' ? '/root' : '/home/srivas').replace(/\$HOSTNAME/g, 'microos').replace(/\$SHELL/g, '/bin/sh'));
+          break;
+
+        case 'pwd':
+          termPrint(out, termCwd);
+          break;
+
+        case 'cd': {
+          const target = args[0] ? resolvePath(args[0]) : (effectiveUser === 'root' ? '/root' : '/home/srivas');
+          if (termFS[target] || target === '/' || target === '/home' || target === '/etc' || target === '/usr' || target === '/var' || target === '/tmp' || target === '/proc' || target === '/dev') {
+            termCwd = target;
+          } else {
+            termPrint(out, `cd: ${args[0]}: No such file or directory`);
+          }
+          break;
+        }
+
+        case 'ls': {
+          const target = args.find(a => !a.startsWith('-')) ? resolvePath(args.find(a => !a.startsWith('-'))) : termCwd;
+          const list = termFS[target] || ['(empty)'];
+          if (args.includes('-la') || args.includes('-l') || args.includes('-al')) {
+            termPrint(out, `total ${list.length * 4}`);
+            list.forEach(f => termPrint(out, `drwxr-xr-x  1 ${effectiveUser} ${effectiveUser}  4096 Nov 23 01:00 ${f}`));
+          } else {
+            termPrint(out, list.join('  '));
+          }
+          break;
+        }
+
+        case 'cat':
+          if (!args[0]) { termPrint(out, 'cat: missing operand'); break; }
+          if (args[0].includes('passwd')) {
+            termPrint(out, 'root:x:0:0:root:/root:/bin/sh\nsrivas:x:1000:1000:M Srivas:/home/srivas:/bin/sh\nnobody:x:65534:65534:nobody:/:/bin/sh');
+          } else if (args[0].includes('hostname')) {
+            termPrint(out, 'microos');
+          } else if (args[0].includes('resolv')) {
+            termPrint(out, 'nameserver 8.8.8.8\nnameserver 1.1.1.1');
+          } else if (args[0].includes('hosts')) {
+            termPrint(out, '127.0.0.1   localhost\n127.0.1.1   microos');
+          } else if (args[0].includes('profile')) {
+            termPrint(out, 'export PATH="/usr/local/bin:/usr/bin:/bin"\nexport USER=srivas\nexport HOME=/home/srivas');
+          } else {
+            termPrint(out, `cat: ${args[0]}: No such file or directory`);
+          }
+          break;
+
+        case 'ping': {
+          const host = args.find(a => !a.startsWith('-')) || '';
+          if (!host) {
+            termPrint(out, 'ping: usage: ping [-c count] destination');
+            break;
+          }
+          const count = args.includes('-c') ? parseInt(args[args.indexOf('-c') + 1]) || 4 : 4;
+          const ip = (host === 'localhost' || host === '127.0.0.1') ? '127.0.0.1' : (host.includes('google') ? '142.250.183.46' : '8.8.8.8');
+          termPrint(out, `PING ${host} (${ip}): 56 data bytes`);
+          for (let i = 0; i < count; i++) {
+            const ms = (0.12 + Math.random() * 0.45).toFixed(3);
+            termPrint(out, `64 bytes from ${ip}: seq=${i} ttl=64 time=${ms} ms`);
+          }
+          termPrint(out, `--- ${host} ping statistics ---`);
+          termPrint(out, `${count} packets transmitted, ${count} packets received, 0% packet loss`);
+          termPrint(out, `round-trip min/avg/max = 0.120/0.345/0.565 ms`);
+          break;
+        }
+
+        case 'ifconfig':
+          termPrint(out, 'eth0      Link encap:Ethernet  HWaddr 08:00:27:E1:BF:64');
+          termPrint(out, '          inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0');
+          termPrint(out, '          inet6 addr: fe80::a00:27ff:fee1:bf64/64 Scope:Link');
+          termPrint(out, '          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1');
+          termPrint(out, '          RX packets:248 errors:0 dropped:0 overruns:0 frame:0');
+          termPrint(out, '          TX packets:194 errors:0 dropped:0 overruns:0 carrier:0');
+          termPrint(out, '');
+          termPrint(out, 'lo        Link encap:Local Loopback');
+          termPrint(out, '          inet addr:127.0.0.1  Mask:255.0.0.0');
+          termPrint(out, '          inet6 addr: ::1/128 Scope:Host');
+          termPrint(out, '          UP LOOPBACK RUNNING  MTU:65536  Metric:1');
+          break;
+
+        case 'ip':
+          if (args[0] === 'addr' || args[0] === 'a') {
+            termPrint(out, '1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN\n    inet 127.0.0.1/8 scope host lo\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP\n    inet 10.0.2.15/24 brd 10.0.2.255 scope global eth0');
+          } else if (args[0] === 'route' || args[0] === 'r') {
+            termPrint(out, 'default via 10.0.2.2 dev eth0\n10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15');
+          } else {
+            termPrint(out, 'Usage: ip [addr|route|link]');
+          }
+          break;
+
+        case 'date':
+          termPrint(out, now.toString());
+          break;
+
+        case 'uptime':
+          termPrint(out, ` ${now.toTimeString().slice(0,5)} up ${upMins} min,  1 user,  load average: 0.01, 0.01, 0.00`);
+          break;
+
+        case 'ps':
+          termPrint(out, '  PID TTY          TIME CMD');
+          termPrint(out, '    1 ?        00:00:01 system_init');
+          termPrint(out, '    2 ?        00:00:15 compositor_gui');
+          termPrint(out, '    3 ?        00:00:00 iwd_wifi_daemon');
+          termPrint(out, '    4 ?        00:00:00 ps2_input_mgr');
+          termPrint(out, '   42 tty1     00:00:00 sh');
+          termPrint(out, '   88 tty1     00:00:00 ps');
+          break;
+
+        case 'top': case 'htop':
+          termPrint(out, `top - ${now.toTimeString().slice(0,8)} up ${upMins} min, 1 user, load: 0.01 0.01 0.00`);
+          termPrint(out, 'Tasks: 6 total, 1 running, 5 sleeping');
+          termPrint(out, '%Cpu(s):  0.6 us,  0.2 sy,  0.0 ni, 99.2 id');
+          termPrint(out, 'MiB Mem :   1024.0 total,    386.4 free,    637.6 used');
+          termPrint(out, '');
+          termPrint(out, '  PID USER      PR  NI    VIRT    RES %CPU %MEM  COMMAND');
+          termPrint(out, '    1 root      20   0    4100   2048  0.2  0.2  system_init');
+          termPrint(out, '    2 root      20   0   16200   8192 12.4  0.8  compositor_gui');
+          termPrint(out, '    3 root      20   0    2800   1024  0.1  0.1  iwd_wifi_daemon');
+          if (cmd === 'htop') openWindow('sysmon');
+          break;
+
+        case 'free':
+          termPrint(out, '               total        used        free      shared  buff/cache   available');
+          termPrint(out, 'Mem:         1048576      652928      395648         512           0      395136');
+          termPrint(out, 'Swap:              0           0           0');
+          break;
+
+        case 'df':
+          termPrint(out, 'Filesystem     1K-blocks    Used Available Use% Mounted on');
+          termPrint(out, '/dev/sda1         524288   15036    509252   3% /');
+          termPrint(out, 'tmpfs             524288       0    524288   0% /dev/shm');
+          break;
+
+        case 'du':
+          termPrint(out, `4\t${args[0] || termCwd}`);
+          break;
+
+        case 'netstat':
+          termPrint(out, 'Active Internet connections (only servers)');
+          termPrint(out, 'Proto Recv-Q Send-Q Local Address           Foreign Address         State');
+          termPrint(out, 'tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN');
+          termPrint(out, 'tcp        0      0 127.0.0.1:8080          0.0.0.0:*               LISTEN');
+          break;
+
+        case 'nslookup': case 'dig': {
+          const h = args[0] || 'google.com';
+          termPrint(out, `Server:\t\t8.8.8.8\nAddress:\t8.8.8.8#53\n\nNon-authoritative answer:\nName:\t${h}\nAddress: 142.250.183.46`);
+          break;
+        }
+
+        case 'curl': case 'wget':
+          termPrint(out, `${cmd}: connecting to ${args[0] || 'http://localhost:8080'}... HTTP/1.1 200 OK (${(40 + Math.random()*20).toFixed(0)}ms)`);
+          break;
+
+        case 'ssh':
+          termPrint(out, `ssh: connect to host ${args[0] || 'microos'}: Connection refused (NAT mode)`);
+          break;
+
+        case 'mkdir': case 'touch': case 'rm': case 'cp': case 'mv': case 'chmod': case 'chown':
+          if ((cmd === 'cp' || cmd === 'mv') && args.length < 2) {
+            termPrint(out, `${cmd}: missing file operand`);
+          }
+          break;
+
+        case 'grep':
+          termPrint(out, `grep: ${args[args.length-1] || 'pattern'}: No such file or directory`);
+          break;
+
+        case 'find':
+          termPrint(out, '.');
+          break;
+
+        case 'which':
+          if (args[0]) termPrint(out, `/usr/bin/${args[0]}`);
+          else termPrint(out, 'which: missing argument');
+          break;
+
+        case 'history':
+          termHistory.slice(0, 15).reverse().forEach((h, i) => termPrint(out, `  ${i+1}  ${h}`));
+          break;
+
+        case 'alias':
+          termPrint(out, "alias ll='ls -la'\nalias cls='clear'\nalias restart='reboot'");
+          break;
+
+        case 'neofetch':
+          termPrint(out, '    .---.        MicroOS Modern Edition v5.2');
+          termPrint(out, '   /     \\       ---------------------------');
+          termPrint(out, '  | () () |      OS:       MicroOS 5.2 (x86_64)');
+          termPrint(out, '   \\  ^  /       Kernel:   7.0.0-43-generic');
+          termPrint(out, '    |||||        User:     srivas@microos');
+          termPrint(out, '    |||||        Uptime:   ' + upMins + ' minutes');
+          termPrint(out, '                 Shell:    ash (BusyBox 1.37)');
+          termPrint(out, '                 Memory:   638MB / 1024MB');
+          termPrint(out, '                 CPU:      x86_64 @ 2.4 GHz');
+          break;
+
+        case 'snake': openWindow('snake'); break;
+        case 'tetris': openWindow('tetris'); break;
+        case 'wifi': openWindow('wifi'); break;
+        case 'arcade': openWindow('arcade'); break;
+        case 'snap': case 'store': openWindow('snapstore'); break;
+        case 'reboot': case 'shutdown': case 'poweroff':
+          termPrint(out, `System ${cmd} request initiated (simulated in browser).`);
+          break;
+
+        case 'help':
+          termPrint(out, 'MicroOS Terminal v3.0 — Built-in Linux Commands:');
+          termPrint(out, '  USER:     whoami, who, who am i, id, su, sudo');
+          termPrint(out, '  NETWORK:  ping, ifconfig, ip, netstat, nslookup, curl, wget');
+          termPrint(out, '  SYSTEM:   uname, hostname, uptime, date, ps, top, htop, free, df, du');
+          termPrint(out, '  FILES:    ls, cd, pwd, cat, mkdir, touch, cp, mv, rm, find, which');
+          termPrint(out, '  APPS:     wifi, snake, tetris, arcade, snap, neofetch');
+          termPrint(out, '  MISC:     echo, clear, history, alias, exit, help');
+          break;
+
+        case 'exit':
+          closeWindow('terminal');
+          break;
+
+        default:
+          termPrint(out, `sh: ${cmd}: command not found\nType 'help' for available commands.`);
+      }
+
+      termPrint(out, '');
+      input.value = '';
+      out.parentElement.scrollTop = out.parentElement.scrollHeight;
+    }
+
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent-magenta', color);
+    }
+  </script>
+</body>
+</html>

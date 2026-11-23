@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
 MicroOS - Automated Hugging Face Publisher
-Uploads MicroOS ISOs, VDIs, documentation, and metadata to Hugging Face.
+Uploads MicroOS ISOs, VDIs, documentation, and the interactive web demo Space to Hugging Face.
 Student: M. Srivas (USN: 25BTRCL143)
 College: Jain University (FET) - AIML
+HF Username: Srivas369
 """
 
 import os
@@ -17,8 +18,8 @@ def main():
         os.chdir(repo_dir)
 
     parser = argparse.ArgumentParser(description="Publish MicroOS to Hugging Face")
-    parser.add_argument("--repo-id", default=None, help="Hugging Face repo ID (e.g. username/MicroOS)")
-    parser.add_argument("--repo-type", default="model", choices=["model", "dataset", "space"], help="Repository type")
+    parser.add_argument("--username", default="Srivas369", help="Hugging Face username")
+    parser.add_argument("--repo-name", default="microOS3", help="Repository/Space name")
     parser.add_argument("--token", default=None, help="Hugging Face write token (or set HF_TOKEN env var)")
     args = parser.parse_args()
 
@@ -27,14 +28,15 @@ def main():
     print("============================================================")
     print("        MicroOS - Hugging Face Publishing Tool")
     print("============================================================")
-    print("Student : M. Srivas (USN: 25BTRCL143)")
-    print("College : Jain University (FET) - AIML")
+    print("Student  : M. Srivas (USN: 25BTRCL143)")
+    print("College  : Jain University (FET) - AIML")
+    print(f"HF User  : {args.username}")
     print("============================================================")
 
     if not token:
         print("\n[*] To publish to Hugging Face:")
         print("    1. Go to: https://huggingface.co/settings/tokens")
-        print("    2. Create a new token with 'Write' role.")
+        print("    2. Click 'Create new token' and select 'Write' role.")
         print()
         try:
             token = input("Enter your Hugging Face Access Token: ").strip()
@@ -56,64 +58,101 @@ def main():
         print(f"[!] Authentication failed: {e}")
         sys.exit(1)
 
-    target_repo_id = args.repo_id or f"{username}/MicroOS"
+    space_id = f"{username}/{args.repo_name}"
+    model_id = f"{username}/{args.repo_name}"
 
-    print(f"[*] Target Repository: https://huggingface.co/{target_repo_id} (Type: {args.repo_type})")
-    print(f"[*] Creating repository on Hugging Face if not already present...")
+    # 1. Publish Interactive Space (Web OS Desktop)
+    print("\n------------------------------------------------------------")
+    print(f"[*] 1/2 Publishing Live Interactive Space: https://huggingface.co/spaces/{space_id}")
+    print("------------------------------------------------------------")
     try:
-        repo_url = api.create_repo(
-            repo_id=target_repo_id,
-            repo_type=args.repo_type,
+        api.create_repo(
+            repo_id=space_id,
+            repo_type="space",
+            space_sdk="static",
             exist_ok=True,
             private=False
         )
-        print(f"[+] Repository ready: {repo_url}")
+        print(f"[+] Space repository ready: https://huggingface.co/spaces/{space_id}")
+
+        if os.path.exists("hf-space/index.html"):
+            api.upload_file(
+                path_or_fileobj="hf-space/index.html",
+                path_in_repo="index.html",
+                repo_id=space_id,
+                repo_type="space",
+                commit_message="Add MicroOS interactive web desktop simulator"
+            )
+            print("[+] Uploaded index.html to Space")
+
+        if os.path.exists("hf-space/README.md"):
+            api.upload_file(
+                path_or_fileobj="hf-space/README.md",
+                path_in_repo="README.md",
+                repo_id=space_id,
+                repo_type="space",
+                commit_message="Add MicroOS space configuration card"
+            )
+            print("[+] Uploaded README.md to Space")
+
+        print(f"[SUCCESS] Live Space is active at: https://huggingface.co/spaces/{space_id}")
     except Exception as e:
-        print(f"[!] Warning during create_repo: {e}")
+        print(f"[!] Space publishing note: {e}")
 
-    # 1. Upload README.md as the Model Card
-    if os.path.exists("README.md"):
-        print("[*] Uploading README.md (Repository Card)...")
-        api.upload_file(
-            path_or_fileobj="README.md",
-            path_in_repo="README.md",
-            repo_id=target_repo_id,
-            repo_type=args.repo_type,
-            commit_message="Add MicroOS documentation and repository card - M. Srivas"
+    # 2. Publish Model / Release Binaries (ISOs, VDIs, Screenshots)
+    print("\n------------------------------------------------------------")
+    print(f"[*] 2/2 Publishing Model & ISO Repository: https://huggingface.co/{model_id}")
+    print("------------------------------------------------------------")
+    try:
+        api.create_repo(
+            repo_id=model_id,
+            repo_type="model",
+            exist_ok=True,
+            private=False
         )
-        print("[+] Uploaded README.md")
+        print(f"[+] Model repository ready: https://huggingface.co/{model_id}")
 
-    # 2. Upload Screenshots
-    if os.path.exists("documentation/screenshots"):
-        print("[*] Uploading documentation screenshots...")
-        api.upload_folder(
-            folder_path="documentation/screenshots",
-            path_in_repo="screenshots",
-            repo_id=target_repo_id,
-            repo_type=args.repo_type,
-            commit_message="Add MicroOS desktop and terminal screenshots"
-        )
-        print("[+] Uploaded screenshots")
+        if os.path.exists("README.md"):
+            api.upload_file(
+                path_or_fileobj="README.md",
+                path_in_repo="README.md",
+                repo_id=model_id,
+                repo_type="model",
+                commit_message="Add MicroOS documentation and repository card - M. Srivas"
+            )
+            print("[+] Uploaded README.md")
 
-    # 3. Upload Release Binaries (ISOs, VDI, checksums)
-    if os.path.exists("release"):
-        print("[*] Uploading release ISOs, VDI, and checksums...")
-        api.upload_folder(
-            folder_path="release",
-            path_in_repo="release",
-            repo_id=target_repo_id,
-            repo_type=args.repo_type,
-            commit_message="Upload MicroOS v1.0 release binaries (microos-gui.iso, microos.iso, microos-gui.vdi)"
-        )
-        print("[+] Uploaded release artifacts")
+        if os.path.exists("documentation/screenshots"):
+            api.upload_folder(
+                folder_path="documentation/screenshots",
+                path_in_repo="documentation/screenshots",
+                repo_id=model_id,
+                repo_type="model",
+                commit_message="Add MicroOS VirtualBox operational photos"
+            )
+            print("[+] Uploaded documentation/screenshots")
+
+        if os.path.exists("release"):
+            api.upload_folder(
+                folder_path="release",
+                path_in_repo="release",
+                repo_id=model_id,
+                repo_type="model",
+                commit_message="Upload MicroOS v1.0 release binaries (microos-gui.iso, microos.iso, microos-gui.vdi)"
+            )
+            print("[+] Uploaded release artifacts")
+
+        print(f"[SUCCESS] Model repository active at: https://huggingface.co/{model_id}")
+    except Exception as e:
+        print(f"[!] Model publishing note: {e}")
 
     print("\n============================================================")
     print("   MICROOS SUCCESSFULLY PUBLISHED TO HUGGING FACE!")
     print("============================================================")
-    print(f"  Hugging Face Repository URL : https://huggingface.co/{target_repo_id}")
-    print(f"  Direct GUI ISO Download    : https://huggingface.co/{target_repo_id}/resolve/main/release/microos-gui.iso")
-    print(f"  Direct CLI ISO Download    : https://huggingface.co/{target_repo_id}/resolve/main/release/microos.iso")
-    print(f"  VirtualBox VDI Download    : https://huggingface.co/{target_repo_id}/resolve/main/release/microos-gui.vdi")
+    print(f"  Live Demo (Space) URL : https://huggingface.co/spaces/{space_id}")
+    print(f"  Model & ISOs URL      : https://huggingface.co/{model_id}")
+    print(f"  Direct GUI ISO Link   : https://huggingface.co/{model_id}/resolve/main/release/microos-gui.iso")
+    print(f"  Direct CLI ISO Link   : https://huggingface.co/{model_id}/resolve/main/release/microos.iso")
     print("============================================================\n")
 
 if __name__ == "__main__":

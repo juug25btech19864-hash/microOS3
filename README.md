@@ -169,6 +169,8 @@ help                   # Complete command reference
 - **Institution**: Jain University (Faculty of Engineering & Technology)
 - **Email**: `juug25btech19864@jainuniversity.ac.in`
 - **GitHub**: [juug25btech19864-hash/microOS3](https://github.com/juug25btech19864-hash/microOS3)
+- **Hugging Face Space (Live Demo)**: [Srivas369/microOS3](https://huggingface.co/spaces/Srivas369/microOS3)
+- **Hugging Face Model & ISOs**: [Srivas369/microOS3](https://huggingface.co/Srivas369/microOS3)
 - **Course**: Operating Systems Lab Project
 - **Hypervisor Validation**: Oracle VirtualBox
 - **License**: MIT License

@@ -82,6 +82,10 @@ cp "$PROJ_DIR/networking/ping" usr/bin/ping
 chmod 4755 usr/bin/ping
 ln -sf /usr/bin/ping bin/ping
 
+mkdir -p usr/share/udhcpc
+cp "$PROJ_DIR/configs/default.script" usr/share/udhcpc/default.script
+chmod +x usr/share/udhcpc/default.script
+
 cp "$PROJ_DIR/package-manager/apt" usr/bin/apt
 chmod +x usr/bin/apt
 

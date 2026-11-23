@@ -1,6 +1,6 @@
 #!/bin/sh
 # MicroOS Network Ping Diagnostic Tool
-# Robust ping wrapper with clean diagnostic reporting and offline intelligence
+# Robust ping wrapper with clean diagnostic reporting and 4-packet default (matching desktop)
 
 # ANSI Colors
 ESC=$(printf '\033')
@@ -22,37 +22,69 @@ if [ ! -t 1 ]; then
     C_GRAY=""
 fi
 
-if [ -z "$1" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    cat <<EOF
-Usage: ping [options] <destination>
+# If called with no arguments at all, match the desktop simulator exactly:
+# "ping: usage: ping [-c count] destination"
+if [ $# -eq 0 ]; then
+    echo "ping: usage: ping [-c count] destination"
+    exit 1
+fi
 
-Options:
-  -c <count>    Stop after sending <count> packets (default: continuous)
-  -4            Force IPv4 resolution
-  -6            Force IPv6 resolution
-  -s <size>     Specify number of data bytes to send (default: 56)
-  -W <timeout>  Time to wait for a response in seconds
-
-Examples:
-  ping 127.0.0.1
-  ping 8.8.8.8
-  ping -c 4 google.com
-  ping -c 5 1.1.1.1
-EOF
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "ping: usage: ping [-c count] destination"
+    echo ""
+    echo "Options:"
+    echo "  -c <count>    Stop after sending <count> packets (default: 4)"
+    echo "  -t            Continuous ping until interrupted (Ctrl+C)"
+    echo "  -s <size>     Specify number of data bytes to send (default: 56)"
+    echo "  -W <timeout>  Time to wait for a response in seconds"
+    echo ""
+    echo "Examples:"
+    echo "  ping google.com       (sends 4 packets and finishes)"
+    echo "  ping -c 2 8.8.8.8     (sends 2 packets)"
+    echo "  ping -t google.com    (pings continuously)"
     exit 0
 fi
 
-# Extract the destination (last non-option argument)
+# Parse arguments: detect destination, -c count, and -t (continuous)
 target=""
+has_count=0
+is_continuous=0
+new_args=""
+
+prev=""
 for arg in "$@"; do
+    if [ "$prev" = "-c" ]; then
+        has_count=1
+        new_args="$new_args $arg"
+        prev=""
+        continue
+    fi
+
     case "$arg" in
-        -*) ;;
-        *) target="$arg" ;;
+        -c)
+            has_count=1
+            new_args="$new_args -c"
+            prev="-c"
+            ;;
+        -c*)
+            has_count=1
+            new_args="$new_args $arg"
+            ;;
+        -t|--continuous)
+            is_continuous=1
+            ;;
+        -*)
+            new_args="$new_args $arg"
+            ;;
+        *)
+            target="$arg"
+            new_args="$new_args $arg"
+            ;;
     esac
 done
 
 if [ -z "$target" ]; then
-    echo "${C_RED}[ERROR] Destination host or IP address required.${C_RESET}"
+    echo "ping: usage: ping [-c count] destination"
     exit 1
 fi
 
@@ -108,13 +140,20 @@ if [ "$is_loopback" -eq 0 ]; then
     esac
 fi
 
-# Execute standard BusyBox ping binary with all supplied arguments
+# Execute standard BusyBox ping binary
+# Default to 4 packets if neither -c nor -t was specified (matching desktop behavior)
 BUSYBOX_BIN=$(which busybox || echo "/bin/busybox")
-if [ -x "$BUSYBOX_BIN" ]; then
-    exec "$BUSYBOX_BIN" ping "$@"
-elif command -v ping >/dev/null 2>&1; then
-    exec ping "$@"
+
+if [ "$has_count" -eq 0 ] && [ "$is_continuous" -eq 0 ]; then
+    if [ -x "$BUSYBOX_BIN" ]; then
+        exec "$BUSYBOX_BIN" ping -c 4 $new_args
+    else
+        exec ping -c 4 $new_args
+    fi
 else
-    echo "${C_RED}[ERROR] ping executable not found in system.${C_RESET}"
-    exit 1
+    if [ -x "$BUSYBOX_BIN" ]; then
+        exec "$BUSYBOX_BIN" ping $new_args
+    else
+        exec ping $new_args
+    fi
 fi

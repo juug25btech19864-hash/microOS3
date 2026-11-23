@@ -180,13 +180,15 @@ ${C_YELLOW}DESCRIPTION:${C_RESET}
   round-trip latency and packet loss.
 
 ${C_YELLOW}SYNTAX:${C_RESET}
-  ${C_GREEN}ping <host>${C_RESET}           Ping target continuously (Ctrl+C to stop)
+  ${C_GREEN}ping <host>${C_RESET}            Send 4 ICMP echo packets (matches desktop default)
   ${C_GREEN}ping -c <count> <host>${C_RESET} Send specified number of packets
+  ${C_GREEN}ping -t <host>${C_RESET}         Ping target continuously (Ctrl+C to stop)
 
 ${C_YELLOW}EXAMPLES:${C_RESET}
-  ping -c 3 google.com
+  ping google.com
   ping -c 4 10.0.2.2
   ping -c 2 8.8.8.8
+  ping -t google.com
 EOF
             ;;
         desktop|gui)

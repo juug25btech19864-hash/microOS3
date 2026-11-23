@@ -27,6 +27,11 @@ help() {
     /usr/bin/help "$@"
 }
 
+ping() {
+    /usr/bin/ping "$@"
+}
+
+alias ping='/usr/bin/ping'
 alias help='/usr/bin/help'
 alias commands='/usr/bin/help'
 alias '?'='/usr/bin/help'

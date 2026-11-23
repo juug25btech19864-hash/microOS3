@@ -5,7 +5,7 @@
 MicroOS v2.0 is an ultra-lightweight, bootable x86_64 Linux operating system upgraded with a modern Windows 11/macOS-inspired terminal experience, complete network management, real Wi-Fi stack, and an interactive Control Center.
 
 ## Highlights
-- **Under 50 MB Hard Limit**: Base bootable medium occupies **31 MB (33110016 bytes)**, strictly meeting project constraints.
+- **Under 50 MB Hard Limit**: Base bootable medium occupies **31 MB (33107968 bytes)**, strictly meeting project constraints.
 - **Modern Terminal Experience**: Clean, colorized terminal styling inspired by modern Windows Terminal and macOS Terminal, featuring Unicode box banners and emerald prompts (`micro@micro ~ $`).
 - **Interactive Control Center (`dashboard`)**: 8-module Control Center for rapid access to system metrics, networking, storage, retro arcade games, and settings.
 - **Unified Network Management (`net`)**: Live network status card, interface enumeration, route tracking, and DNS inspection.

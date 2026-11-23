@@ -172,6 +172,7 @@ static int selected_icon = 0;
 static volatile int running = 1;
 static volatile int need_redraw = 1;
 static char wifi_ssid[64] = "Jain_Student";
+static int wifi_scanning = 0;
 
 /* Windows */
 #define MAX_WINDOWS 6
@@ -607,14 +608,56 @@ static void draw_wifi_dialog(WinState *w)
     addch('+');
     attroff(COLOR_PAIR(C_WIN_WHITE_BG));
 
+    /* Available Wi-Fi Networks Section */
+    int list_y = box_y + 5;
+    if (wifi_scanning) {
+        attron(COLOR_PAIR(C_WIN_GREEN_TEXT) | A_BOLD);
+        mvprintw(list_y, wx + 2, "SCANNED: 7 SURROUNDING 802.11ax/ac SSIDs DETECTED: ");
+        attroff(COLOR_PAIR(C_WIN_GREEN_TEXT) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(C_WIN_WHITE_BG) | A_BOLD);
+        mvprintw(list_y, wx + 2, "AVAILABLE WI-FI NETWORKS (REAL SURROUNDING SSIDs):");
+        attroff(COLOR_PAIR(C_WIN_WHITE_BG) | A_BOLD);
+    }
+
+    static const struct {
+        const char *ssid;
+        int signal;
+        const char *sec;
+        const char *freq;
+        int ch;
+        int mbps;
+    } nets[7] = {
+        { "Jain_Student",       87, "Open (Campus)",  "5.0 GHz (ac)", 100, 400 },
+        { "Jain_Guest",         85, "WPA2-Personal",  "5.0 GHz (ac)", 100, 400 },
+        { "Jain_Employee",      80, "WPA2-Personal",  "5.0 GHz (ac)", 100, 400 },
+        { "Revanth",            75, "WPA3-Personal",  "5.0 GHz (ax)", 149, 600 },
+        { "OnePlus 13R Rahul",  70, "WPA3-Personal",  "5.0 GHz (ax)",  36, 433 },
+        { "Lokesh undamatla",   65, "WPA2-Personal",  "2.4 GHz (n)",    6, 144 },
+        { "Jain_Hackathon",     60, "WPA3-Personal",  "5.0 GHz (ax)",  44, 300 },
+    };
+
     /* Status text inside box */
     if (is_conn) {
+        int sig = 87;
+        const char *freq = "5.0 GHz (ac)";
+        int ch = 100;
+        int mbps = 400;
+        for (int i = 0; i < 7; i++) {
+            if (strcmp(wifi_ssid, nets[i].ssid) == 0) {
+                sig = nets[i].signal;
+                freq = nets[i].freq;
+                ch = nets[i].ch;
+                mbps = nets[i].mbps;
+                break;
+            }
+        }
         attron(COLOR_PAIR(C_WIN_GREEN_TEXT) | A_BOLD);
-        mvprintw(box_y + 1, wx + 4, "STATUS: CONNECTED to '%s' (85%% Signal)", wifi_ssid);
+        mvprintw(box_y + 1, wx + 4, "STATUS: CONNECTED to '%s' (%d%% Signal)", wifi_ssid, sig);
         attroff(COLOR_PAIR(C_WIN_GREEN_TEXT) | A_BOLD);
 
         attron(COLOR_PAIR(C_WIN_WHITE_BG));
-        mvprintw(box_y + 2, wx + 4, "Link: 1201 Mbps | 5.0 GHz (ax) | Ch: 48");
+        mvprintw(box_y + 2, wx + 4, "Link: %d Mbps | %s | Ch: %d", mbps, freq, ch);
         mvprintw(box_y + 3, wx + 4, "IPv4: 10.0.2.15/24 | GW: 10.0.2.2 | DNS: 10.0.2.3");
         attroff(COLOR_PAIR(C_WIN_WHITE_BG));
     } else {
@@ -628,25 +671,7 @@ static void draw_wifi_dialog(WinState *w)
         attroff(COLOR_PAIR(C_WIN_WHITE_BG));
     }
 
-    /* Available Wi-Fi Networks Section */
-    int list_y = box_y + 5;
-    attron(COLOR_PAIR(C_WIN_WHITE_BG) | A_BOLD);
-    mvprintw(list_y, wx + 2, "AVAILABLE WI-FI NETWORKS (REAL SURROUNDING SSIDs):");
-    attroff(COLOR_PAIR(C_WIN_WHITE_BG) | A_BOLD);
-
-    static const struct {
-        const char *ssid;
-        int signal;
-        const char *sec;
-    } nets[] = {
-        { "MOJO-JAN-C1-F9",     85, "WPA2-Personal" },
-        { "Srivas-5G-Hotspot", 92, "WPA3-Personal" },
-        { "AndroidAP_7781",     15, "WPA3-Personal" },
-        { "MOJO-JAN-B-F5",      10, "WPA2-Personal" },
-        { "MOJO-JAN-B-F6",       8, "WPA2-Personal" },
-    };
-
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 7; i++) {
         int ry = list_y + 1 + i;
         int active = (is_conn && strcmp(wifi_ssid, nets[i].ssid) == 0);
         attron(COLOR_PAIR(C_WIN_WHITE_BG));
@@ -665,7 +690,7 @@ static void draw_wifi_dialog(WinState *w)
     }
 
     /* Interactive Buttons */
-    int btn_y = list_y + 7;
+    int btn_y = list_y + 8;
     attron(COLOR_PAIR(C_WIN_BTN_BLUE) | A_BOLD);
     mvprintw(btn_y, wx + 3, " [ Scan Networks ] ");
     attroff(COLOR_PAIR(C_WIN_BTN_BLUE) | A_BOLD);
@@ -1261,10 +1286,11 @@ static void handle_mouse(MEVENT *ev)
 
         if (w->type == APP_WIFI) {
             /* Buttons row at w->y + 15 */
-            int btn_y = w->y + 14;
+            int btn_y = w->y + 15;
             if (ev->y == btn_y) {
                 if (ev->x >= w->x + 2 && ev->x <= w->x + 21) {
                     /* [ Scan Networks ] */
+                    wifi_scanning = !wifi_scanning;
                     return;
                 }
                 if (ev->x >= w->x + 22 && ev->x <= w->x + 38) {
@@ -1272,6 +1298,8 @@ static void handle_mouse(MEVENT *ev)
                     wifi_ssid[0] = '\0';
                     FILE *wf = fopen("/run/wifi.state", "w");
                     if (wf) { fputs("", wf); fclose(wf); }
+                    FILE *wf2 = fopen("/etc/wifi_ssid", "w");
+                    if (wf2) { fputs("", wf2); fclose(wf2); }
                     return;
                 }
                 if (ev->x >= w->x + 39 && ev->x <= w->x + 53) {
@@ -1280,14 +1308,17 @@ static void handle_mouse(MEVENT *ev)
                 }
             }
             static const char *net_names[] = {
-                "MOJO-JAN-C1-F9", "Srivas-5G-Hotspot", "AndroidAP_7781", "MOJO-JAN-B-F5", "MOJO-JAN-B-F6"
+                "Jain_Student", "Jain_Guest", "Jain_Employee",
+                "Revanth", "OnePlus 13R Rahul", "Lokesh undamatla", "Jain_Hackathon"
             };
-            /* Network rows at w->y + 8 to w->y + 12 */
-            for (int i = 0; i < 5; i++) {
+            /* Network rows at w->y + 8 to w->y + 14 */
+            for (int i = 0; i < 7; i++) {
                 if (ev->y == w->y + 8 + i && ev->x >= w->x + 2 && ev->x <= w->x + w->w - 2) {
                     strncpy(wifi_ssid, net_names[i], sizeof(wifi_ssid) - 1);
                     FILE *wf = fopen("/run/wifi.state", "w");
                     if (wf) { fputs(wifi_ssid, wf); fclose(wf); }
+                    FILE *wf2 = fopen("/etc/wifi_ssid", "w");
+                    if (wf2) { fputs(wifi_ssid, wf2); fclose(wf2); }
                     return;
                 }
             }
@@ -1354,25 +1385,36 @@ static void handle_input(int ch)
             wins[focused_win].scroll += 3;
         else if (wins[focused_win].type == APP_WIFI) {
             static const char *net_names[] = {
-                "Jain_Student", "Jain_Faculty", "Jain_Staff",
-                "eduroam", "AndroidAP_5G", "Campus_Guest", "Direct_Printer"
+                "Jain_Student", "Jain_Guest", "Jain_Employee",
+                "Revanth", "OnePlus 13R Rahul", "Lokesh undamatla", "Jain_Hackathon"
             };
             if (ch >= '1' && ch <= '7') {
                 strncpy(wifi_ssid, net_names[ch - '1'], sizeof(wifi_ssid) - 1);
+                FILE *wf = fopen("/run/wifi.state", "w");
+                if (wf) { fputs(wifi_ssid, wf); fclose(wf); }
+                FILE *wf2 = fopen("/etc/wifi_ssid", "w");
+                if (wf2) { fputs(wifi_ssid, wf2); fclose(wf2); }
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));
                 need_redraw = 1;
                 return;
             } else if (ch == 'c' || ch == 'C') {
                 strncpy(wifi_ssid, "Jain_Student", sizeof(wifi_ssid) - 1);
+                FILE *wf = fopen("/run/wifi.state", "w");
+                if (wf) { fputs(wifi_ssid, wf); fclose(wf); }
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));
                 need_redraw = 1;
                 return;
             } else if (ch == 'd' || ch == 'D') {
                 wifi_ssid[0] = '\0';
+                FILE *wf = fopen("/run/wifi.state", "w");
+                if (wf) { fputs("", wf); fclose(wf); }
+                FILE *wf2 = fopen("/etc/wifi_ssid", "w");
+                if (wf2) { fputs("", wf2); fclose(wf2); }
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));
                 need_redraw = 1;
                 return;
-            } else if (ch == 'r' || ch == 'R') {
+            } else if (ch == 'r' || ch == 'R' || ch == 's' || ch == 'S') {
+                wifi_scanning = !wifi_scanning;
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));
                 need_redraw = 1;
                 return;

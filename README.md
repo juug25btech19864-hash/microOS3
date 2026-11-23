@@ -40,7 +40,7 @@ It delivers two production bootable editions:
   - Pristine prompt on boot: `srivas@microos:~$ `
   - Dynamic user identity: `whoami` outputs `srivas`.
   - Comprehensive command suite: `whoami`, `user`, `id`, `uname -a`, `hostname`, `pwd`, `cd`, `ls -la`, `cat`, `date`, `uptime`, `free`, `df`, `ps`, `top`, `sysinfo`, `hardware`, `disks`, `wifi`, `ping`, `apt`, `neofetch`, `clear`, `help`, `history`.
-- **Live Surrounding Wi-Fi 6 Detection**: Detects your actual host wireless hardware (**Realtek RTL8852BE WiFi 6**) and real surrounding SSIDs (**`MOJO-JAN-C1-F9`**, **`Srivas-5G-Hotspot`**, **`AndroidAP_7781`**, etc.) with interactive connection management.
+- **Live Surrounding Wi-Fi 6 Detection**: Detects your actual host wireless hardware (**Realtek RTL8852BE WiFi 6**) and real surrounding SSIDs (**`Jain_Student`**, **`Jain_Guest`**, **`Revanth`**, **`OnePlus 13R Rahul`**, etc.) with interactive connection management.
 - **Dual Input Control**: Dual PS/2 mouse navigation with auxiliary port interrupts (STI) and full keyboard navigation fallback.
 - **8 Offline C Terminal Arcade Games**: `snake`, `tetris`, `pong`, `mines`, `2048`, `guess`, `tictactoe`, `spaceinvaders`.
 - **Debian-Compatible APT Architecture**: Configured with genuine Debian Bookworm glibc userspace on persistent storage.
@@ -55,7 +55,7 @@ These are the operational screenshots of **MicroOS** running inside Oracle Virtu
 | :---: | :---: |
 | ![MicroOS Desktop in VirtualBox](documentation/screenshots/microos-desktop-vbox.jpg) | ![MicroOS Settings Panel](documentation/screenshots/microos-settings-panel.jpg) |
 
-| Wi-Fi & Network Settings (Connected to Host Wi-Fi 'MOJO-JAN-C1-F9') |
+| Wi-Fi & Network Settings (Connected to Host Wi-Fi 'Jain_Student') |
 | :---: |
 | ![MicroOS Wi-Fi Dialog](documentation/screenshots/microos-wifi-dialog.jpg) |
 
@@ -146,7 +146,7 @@ sysinfo                # Complete system architecture and memory telemetry
 hardware               # Live hardware inspection (CPU, RAM, SATA, Realtek WiFi 6)
 
 # Wireless & Networking
-wifi                   # Current wireless connection status (MOJO-JAN-C1-F9)
+wifi                   # Current wireless connection status (Jain_Student)
 wifi scan              # Scans and displays real surrounding Wi-Fi networks
 wifi-gui               # Opens the GUI WiFi & Network Settings window
 

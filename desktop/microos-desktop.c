@@ -229,11 +229,12 @@ static void init_colors(void)
         init_pair(C_TOP_CLOCK,    255,  54);  /* Purple clock pill */
         init_pair(C_TOP_POWER,    255, 196);  /* Red power pill */
 
-        init_pair(C_WAVE_CORE,    231, 198);  /* White on neon pink */
-        init_pair(C_WAVE_PINK,    198,  17);  /* Neon pink */
-        init_pair(C_WAVE_PURPLE,  129,  17);  /* Royal purple */
-        init_pair(C_WAVE_INDIGO,   45,  17);  /* Indigo / bright cyan */
-        init_pair(C_WAVE_SHADOW,   60,  17);  /* Shadow */
+        /* Wave wallpaper layers - Windows 11 Blue Bloom Palette */
+        init_pair(C_WAVE_CORE,    231,  33);  /* White on vivid azure blue */
+        init_pair(C_WAVE_PINK,     39,  17);  /* Bright cyan / electric blue */
+        init_pair(C_WAVE_PURPLE,   27,  17);  /* Royal cobalt blue */
+        init_pair(C_WAVE_INDIGO,   21,  17);  /* Deep navy blue */
+        init_pair(C_WAVE_SHADOW,   18,  17);  /* Abyssal shadow */
 
         init_pair(C_BADGE_WHITE,  232, 255);  /* Black on white */
         init_pair(C_BADGE_CYAN,    16,  51);  /* Black on cyan */
@@ -247,16 +248,16 @@ static void init_colors(void)
         init_pair(C_ICON_SEL,      16, 220);  /* Black on gold */
 
         init_pair(C_DOCK_BG,      255, 233);  /* Dark dock */
-        init_pair(C_DOCK_TILE_MAG,255, 198);
+        init_pair(C_DOCK_TILE_MAG,255,  33);  /* Windows blue tile */
         init_pair(C_DOCK_TILE_CYN, 16,  51);
         init_pair(C_DOCK_TILE_BLU,255,  33);
         init_pair(C_DOCK_TILE_ORG, 16, 208);
-        init_pair(C_WS_ACT,       255, 129);  /* White on purple */
+        init_pair(C_WS_ACT,       255,  33);  /* White on Windows blue */
         init_pair(C_WS_INACT,     246, 236);  /* Grey on dark */
 
-        init_pair(C_WIN_TITLE,    255,  54);  /* Title purple */
+        init_pair(C_WIN_TITLE,    255,  27);  /* Title royal blue */
         init_pair(C_WIN_BODY,     255, 233);  /* Dark window body */
-        init_pair(C_WIN_BORDER,   198, 233);  /* Magenta border */
+        init_pair(C_WIN_BORDER,    39, 233);  /* Cyan / blue border */
         init_pair(C_MENU_DROP,     16, 254);  /* Menu */
         init_pair(C_MENU_HIGH,    255,  54);  /* Menu highlight */
         init_pair(C_STATUS_OK,     48, 234);  /* Green */
@@ -277,11 +278,12 @@ static void init_colors(void)
         init_pair(C_TOP_CLOCK,     COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_TOP_POWER,     COLOR_WHITE,   COLOR_RED);
 
-        init_pair(C_WAVE_CORE,     COLOR_WHITE,   COLOR_MAGENTA);
-        init_pair(C_WAVE_PINK,     COLOR_MAGENTA, COLOR_BLACK);
-        init_pair(C_WAVE_PURPLE,   COLOR_MAGENTA, COLOR_BLACK);
+        /* Standard 16-color VGA Console - Windows 11 Blue Bloom */
+        init_pair(C_WAVE_CORE,     COLOR_WHITE,   COLOR_BLUE);
+        init_pair(C_WAVE_PINK,     COLOR_CYAN,    COLOR_BLACK);
+        init_pair(C_WAVE_PURPLE,   COLOR_BLUE,    COLOR_BLACK);
         init_pair(C_WAVE_INDIGO,   COLOR_BLUE,    COLOR_BLACK);
-        init_pair(C_WAVE_SHADOW,   COLOR_BLUE,    COLOR_BLACK);
+        init_pair(C_WAVE_SHADOW,   COLOR_BLACK,   COLOR_BLACK);
 
         init_pair(C_BADGE_WHITE,   COLOR_BLACK,   COLOR_WHITE);
         init_pair(C_BADGE_CYAN,    COLOR_BLACK,   COLOR_CYAN);
@@ -295,16 +297,16 @@ static void init_colors(void)
         init_pair(C_ICON_SEL,      COLOR_BLACK,   COLOR_YELLOW);
 
         init_pair(C_DOCK_BG,       COLOR_WHITE,   COLOR_BLACK);
-        init_pair(C_DOCK_TILE_MAG, COLOR_WHITE,   COLOR_MAGENTA);
+        init_pair(C_DOCK_TILE_MAG, COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_DOCK_TILE_CYN, COLOR_BLACK,   COLOR_CYAN);
         init_pair(C_DOCK_TILE_BLU, COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_DOCK_TILE_ORG, COLOR_BLACK,   COLOR_YELLOW);
-        init_pair(C_WS_ACT,        COLOR_WHITE,   COLOR_MAGENTA);
+        init_pair(C_WS_ACT,        COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_WS_INACT,      COLOR_WHITE,   COLOR_BLACK);
 
         init_pair(C_WIN_TITLE,     COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_WIN_BODY,      COLOR_WHITE,   COLOR_BLACK);
-        init_pair(C_WIN_BORDER,    COLOR_MAGENTA, COLOR_BLACK);
+        init_pair(C_WIN_BORDER,    COLOR_CYAN,    COLOR_BLACK);
         init_pair(C_MENU_DROP,     COLOR_BLACK,   COLOR_WHITE);
         init_pair(C_MENU_HIGH,     COLOR_WHITE,   COLOR_BLUE);
         init_pair(C_STATUS_OK,     COLOR_GREEN,   COLOR_BLACK);

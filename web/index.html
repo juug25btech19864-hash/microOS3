@@ -6,12 +6,12 @@
   <title>MicroOS — Modern Desktop Environment</title>
   <style>
     :root {
-      --bg-midnight: #0b021a;
-      --topbar-bg: rgba(18, 8, 38, 0.75);
-      --dock-bg: rgba(15, 6, 32, 0.85);
-      --win-bg: rgba(18, 9, 36, 0.94);
-      --accent-magenta: #e91e63;
-      --accent-purple: #9c27b0;
+      --bg-midnight: #060b18;
+      --topbar-bg: rgba(10, 16, 32, 0.78);
+      --dock-bg: rgba(10, 16, 32, 0.85);
+      --win-bg: rgba(13, 20, 38, 0.94);
+      --accent-magenta: #0078d4;
+      --accent-purple: #0099ff;
       --accent-cyan: #00e5ff;
       --accent-blue: #2979ff;
       --accent-orange: #ff9100;
@@ -34,14 +34,15 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════
-       WALLPAPER: 100% Fullscreen Seamless 3D Glowing Satin Wave
+       WALLPAPER: 100% Fullscreen Host Desktop OS Background & Wave
        ═══════════════════════════════════════════════════════════════ */
     .desktop-wallpaper {
       position: absolute;
       inset: 0;
       z-index: 0;
-      background: #080114;
+      background: #020617 url('wallpaper.jpg') no-repeat center center / cover;
       overflow: hidden;
+      transition: background 0.4s ease;
     }
     .wave-canvas {
       position: absolute;
@@ -365,8 +366,8 @@
     }
     .window-header {
       height: 38px;
-      background: linear-gradient(90deg, rgba(80, 16, 100, 0.8), rgba(30, 10, 50, 0.8));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(90deg, rgba(16, 36, 75, 0.88), rgba(10, 20, 42, 0.88));
+      border-bottom: 1px solid rgba(0, 150, 255, 0.2);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -653,6 +654,16 @@
     </div>
     <div class="menu-item" onclick="openWindow('settings'); closeOptionsMenu();">
       <span>🎨</span> Personalization &amp; Themes
+    </div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" onclick="setWallpaper('desktop'); closeOptionsMenu();">
+      <span>🖥️</span> Wallpaper: Windows 11 Desktop (Default)
+    </div>
+    <div class="menu-item" onclick="setWallpaper('light'); closeOptionsMenu();">
+      <span>☀️</span> Wallpaper: Windows 11 Light Bloom
+    </div>
+    <div class="menu-item" onclick="setWallpaper('wave'); closeOptionsMenu();">
+      <span>🌸</span> Wallpaper: MicroOS Satin Wave
     </div>
     <div class="menu-divider"></div>
     <div class="menu-item" onclick="location.reload();">
@@ -1063,12 +1074,37 @@ srivas@microos:~$ </div>
       </div>
     </div>
     <div class="window-body">
+      <div class="wifi-card" style="border-color: rgba(0, 150, 255, 0.4);">
+        <div style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+          <span>🖥️ Desktop Background &amp; Wallpaper</span>
+          <span style="font-size: 11px; color: #00e5ff; font-weight: 500;">Matched to Host Windows 11</span>
+        </div>
+        <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;">Select wallpaper to match your desktop OS background:</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 8px;">
+          <div id="wp-card-desktop" onclick="setWallpaper('desktop')" style="cursor: pointer; border: 2px solid #0078d4; border-radius: 8px; padding: 6px; background: rgba(0, 120, 212, 0.15); transition: all 0.2s;">
+            <div style="height: 60px; background: url('wallpaper.jpg') center/cover; border-radius: 5px;"></div>
+            <div style="font-size: 11px; margin-top: 6px; text-align: center; font-weight: 600; color: #fff;">Windows 11 Bloom (Dark)</div>
+            <div style="font-size: 9.5px; color: #00e5ff; text-align: center;">Host Default</div>
+          </div>
+          <div id="wp-card-light" onclick="setWallpaper('light')" style="cursor: pointer; border: 2px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px; background: rgba(255, 255, 255, 0.04); transition: all 0.2s;">
+            <div style="height: 60px; background: url('wallpaper-light.jpg') center/cover; border-radius: 5px;"></div>
+            <div style="font-size: 11px; margin-top: 6px; text-align: center; font-weight: 600; color: #fff;">Windows 11 Bloom (Light)</div>
+            <div style="font-size: 9.5px; color: #888; text-align: center;">Daylight Theme</div>
+          </div>
+          <div id="wp-card-wave" onclick="setWallpaper('wave')" style="cursor: pointer; border: 2px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px; background: rgba(255, 255, 255, 0.04); transition: all 0.2s;">
+            <div style="height: 60px; background: linear-gradient(135deg, #13042b, #e91e63); border-radius: 5px;"></div>
+            <div style="font-size: 11px; margin-top: 6px; text-align: center; font-weight: 600; color: #fff;">MicroOS Satin Wave</div>
+            <div style="font-size: 9.5px; color: #888; text-align: center;">Animated 3D</div>
+          </div>
+        </div>
+      </div>
       <div class="wifi-card">
         <div style="font-weight: 700; margin-bottom: 8px;">Theme &amp; Accent Lighting</div>
         <div style="display: flex; gap: 8px;">
-          <button class="install-btn" style="background: #e91e63;" onclick="setAccent('#e91e63')">Magenta</button>
+          <button class="install-btn" style="background: #0078d4;" onclick="setAccent('#0078d4')">Windows Blue</button>
           <button class="install-btn" style="background: #00e5ff; color: #000;" onclick="setAccent('#00e5ff')">Cyan</button>
           <button class="install-btn" style="background: #9c27b0;" onclick="setAccent('#9c27b0')">Purple</button>
+          <button class="install-btn" style="background: #e91e63;" onclick="setAccent('#e91e63')">Magenta</button>
           <button class="install-btn" style="background: #00e676; color: #000;" onclick="setAccent('#00e676')">Emerald</button>
         </div>
       </div>
@@ -1107,69 +1143,73 @@ srivas@microos:~$ </div>
     resizeWave();
 
     let wavePhase = 0;
+    let currentWallpaper = localStorage.getItem('microos_wallpaper') || 'desktop';
+
     function renderWave() {
       const w = waveCanvas.width;
       const h = waveCanvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      wavePhase += 0.015;
+      if (currentWallpaper === 'wave') {
+        wavePhase += 0.015;
 
-      // 1. Base deep midnight background gradient across the entire screen
-      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
-      bgGrad.addColorStop(0, '#0a0118');
-      bgGrad.addColorStop(0.35, '#13042b');
-      bgGrad.addColorStop(0.7, '#180436');
-      bgGrad.addColorStop(1, '#090117');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, w, h);
+        // 1. Base deep midnight background gradient across the entire screen
+        const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+        bgGrad.addColorStop(0, '#0a0118');
+        bgGrad.addColorStop(0.35, '#13042b');
+        bgGrad.addColorStop(0.7, '#180436');
+        bgGrad.addColorStop(1, '#090117');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
 
-      // 2. Ambient purple soft glow behind wave
-      const ambGrad = ctx.createRadialGradient(w * 0.7, h * 0.5, 50, w * 0.7, h * 0.5, w * 0.5);
-      ambGrad.addColorStop(0, 'rgba(156, 39, 176, 0.45)');
-      ambGrad.addColorStop(0.5, 'rgba(106, 27, 154, 0.2)');
-      ambGrad.addColorStop(1, 'transparent');
-      ctx.fillStyle = ambGrad;
-      ctx.fillRect(0, 0, w, h);
+        // 2. Ambient purple soft glow behind wave
+        const ambGrad = ctx.createRadialGradient(w * 0.7, h * 0.5, 50, w * 0.7, h * 0.5, w * 0.5);
+        ambGrad.addColorStop(0, 'rgba(156, 39, 176, 0.45)');
+        ambGrad.addColorStop(0.5, 'rgba(106, 27, 154, 0.2)');
+        ambGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = ambGrad;
+        ctx.fillRect(0, 0, w, h);
 
-      // 3. Sweeping S-curve satin wave (seamlessly integrated from right toward center)
-      const grad = ctx.createLinearGradient(w * 0.4, 0, w, h);
-      grad.addColorStop(0, 'rgba(156, 39, 176, 0.85)');
-      grad.addColorStop(0.35, 'rgba(233, 30, 99, 0.95)');
-      grad.addColorStop(0.65, 'rgba(255, 64, 129, 0.9)');
-      grad.addColorStop(1, 'rgba(63, 81, 181, 0.65)');
+        // 3. Sweeping S-curve satin wave (seamlessly integrated from right toward center)
+        const grad = ctx.createLinearGradient(w * 0.4, 0, w, h);
+        grad.addColorStop(0, 'rgba(156, 39, 176, 0.85)');
+        grad.addColorStop(0.35, 'rgba(233, 30, 99, 0.95)');
+        grad.addColorStop(0.65, 'rgba(255, 64, 129, 0.9)');
+        grad.addColorStop(1, 'rgba(63, 81, 181, 0.65)');
 
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(w * 0.8, 0);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.8, 0);
 
-      const cp1x = w * 0.48 + Math.sin(wavePhase) * 18;
-      const cp1y = h * 0.38;
-      const cp2x = w * 0.52 + Math.cos(wavePhase * 0.8) * 22;
-      const cp2y = h * 0.68;
-      const endx = w * 0.88;
-      const endy = h;
+        const cp1x = w * 0.48 + Math.sin(wavePhase) * 18;
+        const cp1y = h * 0.38;
+        const cp2x = w * 0.52 + Math.cos(wavePhase * 0.8) * 22;
+        const cp2y = h * 0.68;
+        const endx = w * 0.88;
+        const endy = h;
 
-      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endx, endy);
-      ctx.lineTo(w, h);
-      ctx.lineTo(w, 0);
-      ctx.closePath();
-      ctx.fill();
+        ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endx, endy);
+        ctx.lineTo(w, h);
+        ctx.lineTo(w, 0);
+        ctx.closePath();
+        ctx.fill();
 
-      // 4. Glowing bright neon magenta core highlight ribbon
-      const coreGrad = ctx.createLinearGradient(w * 0.5, 0, w * 0.9, h);
-      coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
-      coreGrad.addColorStop(0.4, 'rgba(255, 128, 171, 0.85)');
-      coreGrad.addColorStop(0.8, 'rgba(233, 30, 99, 0.4)');
-      coreGrad.addColorStop(1, 'transparent');
+        // 4. Glowing bright neon magenta core highlight ribbon
+        const coreGrad = ctx.createLinearGradient(w * 0.5, 0, w * 0.9, h);
+        coreGrad.addColorStop(0, 'rgba(255, 255, 255, 0.5)');
+        coreGrad.addColorStop(0.4, 'rgba(255, 128, 171, 0.85)');
+        coreGrad.addColorStop(0.8, 'rgba(233, 30, 99, 0.4)');
+        coreGrad.addColorStop(1, 'transparent');
 
-      ctx.fillStyle = coreGrad;
-      ctx.beginPath();
-      ctx.moveTo(w * 0.86, 0);
-      ctx.bezierCurveTo(cp1x + 45, cp1y - 30, cp2x + 70, cp2y + 20, endx, endy);
-      ctx.lineTo(w, endy);
-      ctx.lineTo(w, 0);
-      ctx.closePath();
-      ctx.fill();
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.moveTo(w * 0.86, 0);
+        ctx.bezierCurveTo(cp1x + 45, cp1y - 30, cp2x + 70, cp2y + 20, endx, endy);
+        ctx.lineTo(w, endy);
+        ctx.lineTo(w, 0);
+        ctx.closePath();
+        ctx.fill();
+      }
 
       requestAnimationFrame(renderWave);
     }
@@ -2054,6 +2094,45 @@ srivas@microos:~$ </div>
     function setAccent(color) {
       document.documentElement.style.setProperty('--accent-magenta', color);
     }
+
+    /* Wallpaper Manager */
+    function setWallpaper(mode) {
+      currentWallpaper = mode;
+      try { localStorage.setItem('microos_wallpaper', mode); } catch(e){}
+      const bg = document.querySelector('.desktop-wallpaper');
+      if (bg) {
+        if (mode === 'desktop') {
+          bg.style.backgroundImage = "url('wallpaper.jpg')";
+          bg.style.backgroundColor = "#020617";
+          setAccent('#0078d4');
+        } else if (mode === 'light') {
+          bg.style.backgroundImage = "url('wallpaper-light.jpg')";
+          bg.style.backgroundColor = "#e0e6ed";
+          setAccent('#0078d4');
+        } else if (mode === 'wave') {
+          bg.style.backgroundImage = "none";
+          bg.style.backgroundColor = "#080114";
+          setAccent('#e91e63');
+        }
+      }
+      ['desktop', 'light', 'wave'].forEach(m => {
+        const el = document.getElementById('wp-card-' + m);
+        if (el) {
+          if (m === mode) {
+            el.style.borderColor = '#0078d4';
+            el.style.boxShadow = '0 0 12px rgba(0, 120, 212, 0.5)';
+            el.style.background = 'rgba(0, 120, 212, 0.15)';
+          } else {
+            el.style.borderColor = 'rgba(255,255,255,0.15)';
+            el.style.boxShadow = 'none';
+            el.style.background = 'rgba(255, 255, 255, 0.04)';
+          }
+        }
+      });
+    }
+
+    // Apply default or stored wallpaper on load
+    setWallpaper(currentWallpaper);
   </script>
 </body>
 </html>

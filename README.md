@@ -26,9 +26,9 @@ It delivers two production bootable editions:
 
 | Component | Format | Size | Description | Download Link |
 | :--- | :--- | :--- | :--- | :--- |
-| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos-gui.iso) |
-| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos-gui.vdi) |
-| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos.iso) |
+| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://huggingface.co/Srivas369/microOS3/resolve/main/release/microos-gui.iso) |
+| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://huggingface.co/Srivas369/microOS3/resolve/main/release/microos-gui.vdi) |
+| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://huggingface.co/Srivas369/microOS3/resolve/main/release/microos.iso) |
 
 ---
 

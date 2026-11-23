@@ -9,6 +9,8 @@ export SHELL="/bin/sh"
 export HOSTNAME="microos"
 export ENV="/etc/shinit"
 
+unalias help ping q quit heip 2>/dev/null || true
+
 ESC=$(printf '\033')
 export PS1="${ESC}[1;36msrivas@microos${ESC}[1;34m:\w${ESC}[1;32m$ ${ESC}[0m"
 
@@ -31,8 +33,22 @@ ping() {
     /usr/bin/ping "$@"
 }
 
+q() {
+    exit 0
+}
+quit() {
+    exit 0
+}
+heip() {
+    /usr/bin/help "$@"
+}
+
 alias ping='/usr/bin/ping'
 alias help='/usr/bin/help'
+alias heip='/usr/bin/help'
+alias hlep='/usr/bin/help'
+alias hlpe='/usr/bin/help'
+alias halp='/usr/bin/help'
 alias commands='/usr/bin/help'
 alias '?'='/usr/bin/help'
 alias cls='clear'
@@ -47,13 +63,6 @@ alias gui='desktop'
 alias q='exit'
 alias quit='exit'
 alias :q='exit'
-
-q() {
-    exit 0
-}
-quit() {
-    exit 0
-}
 
 if [ -t 0 ] && [ -z "$MICROOS_INITIALIZED" ] && [ -z "$MICROOS_TERMINAL" ]; then
     export MICROOS_INITIALIZED=1

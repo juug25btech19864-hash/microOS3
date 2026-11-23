@@ -9,14 +9,14 @@ echo Student  : M. Srivas (USN: 25BTRCL143)
 echo College  : Jain University (FET) - AIML
 echo Username : juug25btech19864-hash
 echo Repo Name: MicroOS
-echo Target   : https://github.com/juug25btech19864-hash/microOS2
+echo Target   : https://github.com/juug25btech19864-hash/microOS3
 echo Location : %CD%
 echo ============================================================
 echo.
 
 git branch -M main
 git remote remove origin 2>nul
-git remote add origin https://github.com/juug25btech19864-hash/microOS2.git
+git remote add origin https://github.com/juug25btech19864-hash/microOS3.git
 
 echo [*] Staging all project files...
 git add .
@@ -33,7 +33,7 @@ if %ERRORLEVEL% EQU 0 (
     echo ============================================================
     echo   MICROOS SUCCESSFULLY PUBLISHED TO GITHUB!
     echo ============================================================
-    echo   GitHub URL: https://github.com/juug25btech19864-hash/microOS2
+    echo   GitHub URL: https://github.com/juug25btech19864-hash/microOS3
     echo ============================================================
 ) else (
     echo.

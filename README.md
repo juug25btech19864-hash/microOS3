@@ -26,9 +26,9 @@ It delivers two production bootable editions:
 
 | Component | Format | Size | Description | Download Link |
 | :--- | :--- | :--- | :--- | :--- |
-| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos-gui.iso) |
-| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos-gui.vdi) |
-| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://github.com/juug25btech19864-hash/microOS2/raw/main/release/microos.iso) |
+| **MicroOS GUI Edition** | Live ISO | **3.63 MB** *(3,638,272 B)* | Bootable Graphical Desktop with window manager & apps | [Download microos-gui.iso](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos-gui.iso) |
+| **MicroOS VirtualBox VDI** | Virtual Disk | **5.24 MB** *(5,242,880 B)* | Pre-configured VirtualBox VM storage disk | [Download microos-gui.vdi](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos-gui.vdi) |
+| **MicroOS Terminal CLI** | Live ISO | **12.77 MB** *(12,769,280 B)*| Minimal Linux 6.6 CLI with arcade games & APT | [Download microos.iso](https://github.com/juug25btech19864-hash/microOS3/raw/main/release/microos.iso) |
 
 ---
 
@@ -47,15 +47,21 @@ It delivers two production bootable editions:
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots & VirtualBox Verification
 
-| Pristine Terminal & `whoami` | Real Wi-Fi Network Settings GUI |
-| :---: | :---: |
-| ![Terminal whoami](documentation/screenshots/whoami-result.png) | ![WiFi Settings GUI](documentation/screenshots/wifi-gui-settings.png) |
+### Real Oracle VirtualBox VM Execution
 
-| CLI Wi-Fi Scan | Clean Shell Prompt on Boot |
+| MicroOS Desktop Environment in VirtualBox | Settings & Control Panel Modal |
 | :---: | :---: |
-| ![CLI wifi scan](documentation/screenshots/wifi-cli-scan.png) | ![Clean Terminal](documentation/screenshots/clean-terminal.png) |
+| ![MicroOS Desktop in VirtualBox](documentation/screenshots/microos-desktop-vbox.jpg) | ![MicroOS Settings Panel](documentation/screenshots/microos-settings-panel.jpg) |
+
+| Wi-Fi & Network Settings (Connected to Host Wi-Fi) | Pristine Bash Terminal & `whoami` |
+| :---: | :---: |
+| ![MicroOS Wi-Fi Dialog](documentation/screenshots/microos-wifi-dialog.jpg) | ![Terminal whoami](documentation/screenshots/whoami-result.png) |
+
+| Real Wi-Fi Network Settings GUI | Clean Shell Prompt on Boot |
+| :---: | :---: |
+| ![WiFi Settings GUI](documentation/screenshots/wifi-gui-settings.png) | ![Clean Terminal](documentation/screenshots/clean-terminal.png) |
 
 ---
 
@@ -166,7 +172,7 @@ help                   # Complete command reference
 - **Department**: Artificial Intelligence & Machine Learning (AIML)
 - **Institution**: Jain University (Faculty of Engineering & Technology)
 - **Email**: `juug25btech19864@jainuniversity.ac.in`
-- **GitHub**: [juug25btech19864-hash](https://github.com/juug25btech19864-hash/microOS2)
+- **GitHub**: [juug25btech19864-hash/microOS3](https://github.com/juug25btech19864-hash/microOS3)
 - **Course**: Operating Systems Lab Project
 - **Hypervisor Validation**: Oracle VirtualBox
 - **License**: MIT License

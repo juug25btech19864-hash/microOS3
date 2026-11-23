@@ -1357,15 +1357,15 @@ srivas@microos:~$ </div>
 
     /* 6. Wi-Fi Manager Logic — AUTO-DETECT from Windows host via /api/wifi */
     let networks = [
-      { name: "Jain_Student", signal: 87, band: "5.0 GHz (ac)", bandFull: "802.11ac (5.0 GHz) Ch: 100", sec: "Open (Campus)", rate: "400 Mbps", dbm: "-42 dBm", ip: "10.0.2.15/24" },
-      { name: "Jain_Guest", signal: 85, band: "5.0 GHz (ac)", bandFull: "802.11ac (5.0 GHz) Ch: 100", sec: "WPA2-Personal", rate: "400 Mbps", dbm: "-45 dBm", ip: null },
-      { name: "Jain_Employee", signal: 80, band: "5.0 GHz (ac)", bandFull: "802.11ac (5.0 GHz) Ch: 100", sec: "WPA2-Personal", rate: "400 Mbps", dbm: "-49 dBm", ip: null },
-      { name: "Revanth", signal: 75, band: "5.0 GHz (ax)", bandFull: "802.11ax (5.0 GHz) Ch: 149", sec: "WPA3-Personal", rate: "600 Mbps", dbm: "-55 dBm", ip: null },
-      { name: "OnePlus 13R Rahul", signal: 70, band: "5.0 GHz (ax)", bandFull: "802.11ax (5.0 GHz) Ch: 36", sec: "WPA3-Personal", rate: "433 Mbps", dbm: "-59 dBm", ip: null },
-      { name: "Lokesh undamatla", signal: 65, band: "2.4 GHz (n)", bandFull: "802.11n (2.4 GHz) Ch: 6", sec: "WPA2-Personal", rate: "144 Mbps", dbm: "-64 dBm", ip: null },
-      { name: "Jain_Hackathon", signal: 60, band: "5.0 GHz (ax)", bandFull: "802.11ax (5.0 GHz) Ch: 44", sec: "WPA3-Personal", rate: "300 Mbps", dbm: "-68 dBm", ip: null }
+      { name: "MOJO-JAN-C1-F9", signal: 82, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 48", sec: "WPA2-Personal", rate: "1201.0 Mbps / 960.5 Mbps Full Duplex", dbm: "-67 dBm, Good", ip: "172.16.0.103 (Gateway: 172.16.0.1)" },
+      { name: "MOJO-JAN-C1-F8", signal: 77, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 2", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-64 dBm", ip: null },
+      { name: "Mojo-JAN-B-F9", signal: 67, band: "5.0 GHz", bandFull: "5.0 GHz (802.11ax) Ch: 40", sec: "WPA2-Personal", rate: "866.7 Mbps", dbm: "-66 dBm", ip: null },
+      { name: "Galaxy A15 5G 64F1", signal: 65, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ac) Ch: 6", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-65 dBm", ip: null },
+      { name: "S21 FE", signal: 64, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ac) Ch: 1", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-68 dBm", ip: null },
+      { name: "MOJO-F2", signal: 62, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 8", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-69 dBm", ip: null },
+      { name: "MOJO-JAN-B-F6", signal: 62, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 1", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-69 dBm", ip: null }
     ];
-    let currentConnected = "Jain_Student";
+    let currentConnected = "MOJO-JAN-C1-F9";
 
     function sigColor(sig) { return sig > 70 ? '#00e676' : sig > 50 ? '#ff9100' : '#ff5252'; }
 

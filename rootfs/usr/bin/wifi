@@ -25,7 +25,7 @@ if [ ! -f "$STATE_FILE" ]; then
     if [ -f /etc/wifi_ssid ]; then
         cp /etc/wifi_ssid "$STATE_FILE"
     else
-        echo "Jain_Student" > "$STATE_FILE"
+        echo "MOJO-JAN-C1-F9" > "$STATE_FILE"
     fi
 fi
 
@@ -35,12 +35,12 @@ get_current_ssid() {
     elif [ -f /etc/wifi_ssid ]; then
         cat /etc/wifi_ssid
     else
-        echo "Jain_Student"
+        echo "MOJO-JAN-C1-F9"
     fi
 }
 
 get_current_ip() {
-    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "10.0.2.15"
+    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "172.16.0.103"
 }
 
 get_wifi_interface() {
@@ -55,14 +55,13 @@ get_wifi_interface() {
 }
 
 # Real networks catalog (synchronized with host Realtek RTL8852BE Wi-Fi adapter)
-NETWORKS="Jain_Student|87|5 GHz|Open (Campus)|400 Mbps|80:bc:37:8d:41:ec|Connected
-Jain_Guest|85|5 GHz|WPA2-Personal|400 Mbps|80:bc:37:8d:41:ed|Available
-Jain_Employee|80|5 GHz|WPA2-Personal|400 Mbps|80:bc:37:8d:41:ee|Available
-Revanth|75|5 GHz|WPA3-Personal|600 Mbps|94:83:c4:12:34:56|Available
-OnePlus 13R Rahul|70|5 GHz|WPA3-Personal|433 Mbps|22:33:44:55:66:77|Available
-Lokesh undamatla|65|2.4 GHz|WPA2-Personal|144 Mbps|12:34:56:78:9a:bc|Available
-Jain_Hackathon|60|5 GHz|WPA3-Personal|300 Mbps|80:bc:37:8d:42:01|Available
-Recover.Me-3809E0|50|2.4 GHz|WPA2-Personal|72 Mbps|38:09:e0:11:22:33|Available"
+NETWORKS="MOJO-JAN-C1-F9|82|5 GHz|WPA2-Personal|1201 Mbps|50:91:e3:75:8b:27|Connected
+MOJO-JAN-C1-F8|77|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:4e|Available
+Mojo-JAN-B-F9|67|5 GHz|WPA2-Personal|866 Mbps|50:91:e3:75:86:32|Available
+Galaxy A15 5G 64F1|65|2.4 GHz|WPA2-Personal|144 Mbps|c6:59:f6:0f:9e:36|Available
+S21 FE|64|2.4 GHz|WPA2-Personal|144 Mbps|c6:33:16:e2:c8:5f|Available
+MOJO-F2|62|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:bb:d2|Available
+MOJO-JAN-B-F6|62|2.4 GHz|WPA2-Personal|144 Mbps|50:91:e3:75:7b:ca|Available"
 
 get_signal_bar() {
     sig=$1
@@ -153,14 +152,13 @@ wifi_connect() {
         printf "Enter network number [1-6] or SSID to connect: "
         read -r choice
         case "$choice" in
-            1) target="Jain_Student" ;;
-            2) target="Jain_Guest" ;;
-            3) target="Jain_Employee" ;;
-            4) target="Revanth" ;;
-            5) target="OnePlus 13R Rahul" ;;
-            6) target="Lokesh undamatla" ;;
-            7) target="Jain_Hackathon" ;;
-            8) target="Recover.Me-3809E0" ;;
+            1) target="MOJO-JAN-C1-F9" ;;
+            2) target="MOJO-JAN-C1-F8" ;;
+            3) target="Mojo-JAN-B-F9" ;;
+            4) target="Galaxy A15 5G 64F1" ;;
+            5) target="S21 FE" ;;
+            6) target="MOJO-F2" ;;
+            7) target="MOJO-JAN-B-F6" ;;
             *) target="$choice" ;;
         esac
     fi

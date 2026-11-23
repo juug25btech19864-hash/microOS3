@@ -39,6 +39,16 @@ alias netinfo='ifconfig'
 alias restart='reboot'
 alias shutdown='poweroff'
 alias gui='desktop'
+alias q='exit'
+alias quit='exit'
+alias :q='exit'
+
+q() {
+    exit 0
+}
+quit() {
+    exit 0
+}
 
 if [ -t 0 ] && [ -z "$MICROOS_INITIALIZED" ] && [ -z "$MICROOS_TERMINAL" ]; then
     export MICROOS_INITIALIZED=1

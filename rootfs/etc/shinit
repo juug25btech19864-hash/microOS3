@@ -26,3 +26,13 @@ alias netinfo='ifconfig'
 alias restart='reboot'
 alias shutdown='poweroff'
 alias gui='desktop'
+alias q='exit'
+alias quit='exit'
+alias :q='exit'
+
+q() {
+    exit 0
+}
+quit() {
+    exit 0
+}

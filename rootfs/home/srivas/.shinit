@@ -1,7 +1,4 @@
-# ~/.shinit for user srivas
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/games"
-export ENV="/etc/shinit"
-
+# /etc/shinit for MicroOS interactive shell
 whoami() {
     echo "srivas"
 }
@@ -29,3 +26,13 @@ alias netinfo='ifconfig'
 alias restart='reboot'
 alias shutdown='poweroff'
 alias gui='desktop'
+alias q='exit'
+alias quit='exit'
+alias :q='exit'
+
+q() {
+    exit 0
+}
+quit() {
+    exit 0
+}

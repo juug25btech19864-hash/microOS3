@@ -167,7 +167,7 @@ ${C_YELLOW}SYNTAX:${C_RESET}
 ${C_YELLOW}EXAMPLES:${C_RESET}
   wifi
   wifi scan
-  wifi connect Jain_Student
+  wifi connect MOJO-JAN-C1-F9
 EOF
             ;;
         ping)

@@ -1,16 +1,59 @@
+# /etc/profile for MicroOS v3.0
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/games"
+export TERMINFO="/etc/terminfo"
+export TERM="${TERM:-linux}"
 export HOME="/home/srivas"
 export USER="srivas"
 export LOGNAME="srivas"
+export SHELL="/bin/sh"
 export HOSTNAME="microos"
 export ENV="/etc/shinit"
 
 ESC=$(printf '\033')
 export PS1="${ESC}[1;36msrivas@microos${ESC}[1;34m:\w${ESC}[1;32m$ ${ESC}[0m"
 
+whoami() {
+    echo "srivas"
+}
+who() {
+    if [ "$1" = "am" ] && [ "$2" = "i" ]; then
+        echo "srivas"
+    else
+        echo "srivas    tty1         $(date 2>/dev/null)"
+    fi
+}
+
 help() {
     /usr/bin/help "$@"
 }
+
 alias help='/usr/bin/help'
 alias commands='/usr/bin/help'
 alias '?'='/usr/bin/help'
+alias cls='clear'
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias info='uname -a'
+alias netinfo='ifconfig'
+alias restart='reboot'
+alias shutdown='poweroff'
+alias gui='desktop'
+alias q='exit'
+alias quit='exit'
+alias :q='exit'
+
+q() {
+    exit 0
+}
+quit() {
+    exit 0
+}
+
+if [ -t 0 ] && [ -z "$MICROOS_INITIALIZED" ] && [ -z "$MICROOS_TERMINAL" ]; then
+    export MICROOS_INITIALIZED=1
+    printf "${ESC}[H${ESC}[2J"
+    printf "${ESC}[1;33mStarting MicroOS Desktop...${ESC}[0m\n"
+    export DESKTOP_AUTORUN=1
+    exec /usr/bin/desktop
+fi

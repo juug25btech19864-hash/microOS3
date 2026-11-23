@@ -32,6 +32,21 @@ It delivers two production bootable editions:
 
 ---
 
+## 📚 Academic Records & Course Submissions (Jain University - FET AIML)
+
+**Student:** M. Srivas (USN: `25BTRCL143`) | **Faculty:** Dr. Sujeet S Jagtap  
+**Department:** Artificial Intelligence & Machine Learning (AIML)
+
+| Document | Description | Format |
+| :--- | :--- | :--- |
+| **[1. OS Lab Record (Practical Record)](./academic_records/1_OS_Lab_Record_Practical_Record_Srivas_M_25BTRCL143.pdf)** | Comprehensive 118-page practical lab record covering all experiments across OS Structures. | PDF (5.2 MB) |
+| **[2. Continuous Assessment 2 (CA-2)](./academic_records/2_OS_Continuous_Assessment_2_Performance_Investigation_Srivas.pdf)** | Performance Investigation: First-Fit, Best-Fit, and Worst-Fit Memory Allocation Strategies. | PDF (833 KB) |
+| **[3. Continuous Assessment 3 (CA-3)](./academic_records/3_OS_Continuous_Assessment_3_Memory_Allocation_Challenge_Srivas.pdf)** | OS Design & Debugging Challenge: Memory Allocation Strategy Comparison & defect analysis. | PDF (587 KB) |
+| **[4. Continuous Assessment 5 (CA-5)](./academic_records/4_OS_Continuous_Assessment_5_Linux_Systems_Engineering_Srivas.pdf)** | Linux Systems Engineering Challenge: Dynamic contiguous partitioning on 64 MB mmap arena. | PDF (261 KB) |
+| **[5. MicroOS Google Classroom Submission Sheet](./academic_records/MicroOS_GitHub_Submission_GCR_MSrivas.pdf)** | Single-page executive submission sheet with repository specs and VirtualBox screenshots. | PDF (546 KB) |
+
+---
+
 ## 🌟 Key Highlights
 
 - **Strict Size Budget Compliance**: Both editions are drastically smaller than the 50 MB requirement (GUI: **3.63 MB**, CLI: **12.77 MB**).

@@ -47,21 +47,17 @@ It delivers two production bootable editions:
 
 ---
 
-## 📸 Screenshots & VirtualBox Verification
+## 📸 Live Hardware Screenshots (Oracle VirtualBox)
 
-### Real Oracle VirtualBox VM Execution
+These are the operational screenshots of **MicroOS** running inside Oracle VirtualBox:
 
-| MicroOS Desktop Environment in VirtualBox | Settings & Control Panel Modal |
+| MicroOS Desktop Environment & Application Launcher | Settings & Control Panel Modal Window |
 | :---: | :---: |
 | ![MicroOS Desktop in VirtualBox](documentation/screenshots/microos-desktop-vbox.jpg) | ![MicroOS Settings Panel](documentation/screenshots/microos-settings-panel.jpg) |
 
-| Wi-Fi & Network Settings (Connected to Host Wi-Fi) | Pristine Bash Terminal & `whoami` |
-| :---: | :---: |
-| ![MicroOS Wi-Fi Dialog](documentation/screenshots/microos-wifi-dialog.jpg) | ![Terminal whoami](documentation/screenshots/whoami-result.png) |
-
-| Real Wi-Fi Network Settings GUI | Clean Shell Prompt on Boot |
-| :---: | :---: |
-| ![WiFi Settings GUI](documentation/screenshots/wifi-gui-settings.png) | ![Clean Terminal](documentation/screenshots/clean-terminal.png) |
+| Wi-Fi & Network Settings (Connected to Host Wi-Fi 'MOJO-JAN-C1-F9') |
+| :---: |
+| ![MicroOS Wi-Fi Dialog](documentation/screenshots/microos-wifi-dialog.jpg) |
 
 ---
 

@@ -1,3 +1,7 @@
+# ~/.shinit for user srivas
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/games"
+export ENV="/etc/shinit"
+
 whoami() {
     echo "srivas"
 }
@@ -8,6 +12,14 @@ who() {
         echo "srivas    tty1         $(date 2>/dev/null)"
     fi
 }
+
+help() {
+    /usr/bin/help "$@"
+}
+
+alias help='/usr/bin/help'
+alias commands='/usr/bin/help'
+alias '?'='/usr/bin/help'
 alias cls='clear'
 alias ll='ls -la'
 alias la='ls -A'

@@ -7,10 +7,29 @@ export USER="srivas"
 export LOGNAME="srivas"
 export SHELL="/bin/sh"
 export HOSTNAME="microos"
+export ENV="/etc/shinit"
 
 ESC=$(printf '\033')
 export PS1="${ESC}[1;36msrivas@microos${ESC}[1;34m:\w${ESC}[1;32m$ ${ESC}[0m"
 
+whoami() {
+    echo "srivas"
+}
+who() {
+    if [ "$1" = "am" ] && [ "$2" = "i" ]; then
+        echo "srivas"
+    else
+        echo "srivas    tty1         $(date 2>/dev/null)"
+    fi
+}
+
+help() {
+    /usr/bin/help "$@"
+}
+
+alias help='/usr/bin/help'
+alias commands='/usr/bin/help'
+alias '?'='/usr/bin/help'
 alias cls='clear'
 alias ll='ls -la'
 alias la='ls -A'

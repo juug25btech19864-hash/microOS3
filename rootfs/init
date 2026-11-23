@@ -4,10 +4,8 @@
 
 set +e
 
-# Ensure basic PATH and Terminal Environment
+# Ensure basic PATH
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/games
-export TERMINFO=/etc/terminfo
-export TERM=linux
 
 # 1. Mount Virtual Filesystems
 /bin/busybox mount -t proc none /proc 2>/dev/null || mount -t proc none /proc
@@ -24,7 +22,12 @@ if [ -x /sbin/mdev ]; then
     /sbin/mdev -s 2>/dev/null || true
 fi
 
-# 3. Network Loopback Setup
+# 3. Load Kernel Modules
+if [ -d /lib/modules ]; then
+    modprobe -a ahci nvme e1000 e1000e r8169 virtio_net usb_storage xhci_hcd 2>/dev/null || true
+fi
+
+# 4. Network Loopback & Ethernet Auto-Configuration
 if [ -x /sbin/ip ]; then
     /sbin/ip link set lo up 2>/dev/null || true
 elif [ -x /sbin/ifconfig ]; then
@@ -33,17 +36,36 @@ fi
 # Allow ICMP echo sockets for non-root users
 echo "0 2147483647" > /proc/sys/net/ipv4/ping_group_range 2>/dev/null || true
 
-# 4. Hostname
+# Auto-configure Ethernet network interfaces (eth0, enp0s3, etc.)
+for ifpath in /sys/class/net/*; do
+    [ -e "$ifpath" ] || continue
+    ifname=$(basename "$ifpath")
+    [ "$ifname" = "lo" ] && continue
+    [ -d "$ifpath/wireless" ] && continue
+    [ -d "$ifpath/phy80211" ] && continue
+
+    /sbin/ifconfig "$ifname" up 2>/dev/null || /sbin/ip link set "$ifname" up 2>/dev/null || true
+    # Run DHCP client
+    if [ -x /bin/udhcpc ] || [ -x /sbin/udhcpc ]; then
+        udhcpc -i "$ifname" -n -q -t 2 2>/dev/null || true
+    fi
+    # If no IPv4 address was assigned by DHCP, assign standard VirtualBox NAT IP
+    if ! ifconfig "$ifname" 2>/dev/null | grep -q 'inet addr:'; then
+        /sbin/ifconfig "$ifname" 10.0.2.15 netmask 255.255.255.0 up 2>/dev/null || true
+        /sbin/route add default gw 10.0.2.2 dev "$ifname" 2>/dev/null || true
+    fi
+done
+
+# Ensure DNS resolv.conf is populated
+cat <<'EOF' > /etc/resolv.conf
+nameserver 10.0.2.3
+nameserver 8.8.8.8
+nameserver 1.1.1.1
+EOF
+
+# 5. Hostname
 echo "microos" > /etc/hostname 2>/dev/null || true
 hostname microos 2>/dev/null || true
-
-# 5. Load Kernel Modules if present
-if [ -d /lib/modules ]; then
-    modprobe -a ahci nvme e1000 e1000e r8169 usb_storage xhci_hcd psmouse vboxguest 2>/dev/null || true
-    insmod /lib/modules/7.0.0-43-generic/psmouse.ko.zst 2>/dev/null || true
-    insmod /lib/modules/7.0.0-43-generic/vboxguest.ko.zst 2>/dev/null || true
-    chmod -R 666 /dev/input /dev/psaux 2>/dev/null || true
-fi
 
 # 6. Automatic Persistent Storage Scanning
 # Search for partition with label MICROOS_PERSIST or MICROOS_DATA

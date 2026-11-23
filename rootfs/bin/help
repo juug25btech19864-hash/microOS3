@@ -1,0 +1,341 @@
+#!/bin/sh
+# MicroOS Dynamic Command Reference & Help System
+# Student: M. Srivas (USN: 25BTRCL143) - Jain University FET AIML
+
+# ANSI color codes
+ESC=$(printf '\033')
+C_RESET="${ESC}[0m"
+C_BOLD="${ESC}[1m"
+C_CYAN="${ESC}[1;36m"
+C_GREEN="${ESC}[1;32m"
+C_YELLOW="${ESC}[1;33m"
+C_BLUE="${ESC}[1;34m"
+C_MAGENTA="${ESC}[1;35m"
+C_WHITE="${ESC}[1;37m"
+C_RED="${ESC}[1;31m"
+C_GRAY="${ESC}[0;90m"
+
+# Disable color if stdout is not a tty
+if [ ! -t 1 ]; then
+    C_RESET=""
+    C_BOLD=""
+    C_CYAN=""
+    C_GREEN=""
+    C_YELLOW=""
+    C_BLUE=""
+    C_MAGENTA=""
+    C_WHITE=""
+    C_RED=""
+    C_GRAY=""
+fi
+
+show_compact_help() {
+    cat <<EOF
+${C_CYAN}+======================================================================+
+|                  MICROOS COMMAND & SYSTEM REFERENCE                  |
+|                   Minimal Linux. Maximum Control.                    |
++======================================================================+${C_RESET}
+${C_YELLOW}SYSTEM & GUI:${C_RESET}
+  ${C_GREEN}desktop${C_RESET} (gui)        - Launch TUI Desktop Environment & Window Manager
+  ${C_GREEN}sysinfo${C_RESET} (info)       - System status, CPU, RAM, and kernel metrics
+  ${C_GREEN}dashboard${C_RESET} (control)  - Modern Windows/macOS-style Control Center
+  ${C_GREEN}clear${C_RESET} (cls)          - Clear terminal screen
+  ${C_GREEN}whoami${C_RESET}               - Show current logged-in user (srivas)
+  ${C_GREEN}reboot / poweroff${C_RESET}    - Clean restart or shutdown of system
+
+${C_YELLOW}NETWORKING & CONNECTIVITY:${C_RESET}
+  ${C_GREEN}wifi${C_RESET}                 - Interactive Wi-Fi quick settings & hardware status
+  ${C_GREEN}wifi scan${C_RESET}            - Scan for surrounding 802.11 wireless networks
+  ${C_GREEN}ping <host>${C_RESET}          - Test network connectivity (e.g. ping google.com)
+  ${C_GREEN}ifconfig / net${C_RESET}       - Show network interfaces, IP address & DNS routing
+
+${C_YELLOW}APPLICATIONS & STORE:${C_RESET}
+  ${C_GREEN}arcade${C_RESET} (games)       - Retro Arcade launcher (Snake, Tetris, Mines, Pong)
+  ${C_GREEN}snake / tetris${C_RESET}       - Launch retro arcade games directly in shell
+  ${C_GREEN}apt status${C_RESET}           - Inspect APT package manager & repository state
+  ${C_GREEN}disks${C_RESET}                - List storage drives, partitions, and filesystems
+
+${C_CYAN}Type ${C_WHITE}help <cmd>${C_CYAN} for manual (e.g. ${C_GREEN}help wifi${C_CYAN}, ${C_GREEN}help ping${C_CYAN}, ${C_GREEN}help apt${C_CYAN}, ${C_GREEN}help arcade${C_CYAN})
+Type ${C_WHITE}help all${C_CYAN} to view complete multi-page command reference.${C_RESET}
+EOF
+}
+
+show_full_help() {
+    cat <<EOF
+${C_CYAN}+======================================================================+
+|                         MICROOS COMMAND MANUAL                       |
+|                   Minimal Linux. Maximum Control.                    |
++======================================================================+${C_RESET}
+
+${C_YELLOW}SYSTEM & GUI COMMANDS:${C_RESET}
+  ${C_GREEN}desktop${C_RESET} (or ${C_GREEN}gui${C_RESET})
+    Launch the full MicroOS multitasking desktop environment with window
+    manager, taskbar, dock shortcuts, and mouse support.
+  ${C_GREEN}sysinfo${C_RESET} (or ${C_GREEN}info${C_RESET})
+    Displays kernel release, uptime, CPU cores, RAM, and load average.
+  ${C_GREEN}dashboard${C_RESET}
+    Open modern Control Center menu for telemetry, settings, and tools.
+  ${C_GREEN}settings${C_RESET} (or ${C_GREEN}control${C_RESET})
+    System personalization, network preferences, and hardware config.
+  ${C_GREEN}clear${C_RESET} (or ${C_GREEN}cls${C_RESET})
+    Clears the terminal console display.
+  ${C_GREEN}whoami${C_RESET} / ${C_GREEN}who am i${C_RESET}
+    Display current user identity (srivas, UID 1000).
+  ${C_GREEN}uptime${C_RESET} / ${C_GREEN}date${C_RESET}
+    Show system running time and real-time clock.
+  ${C_GREEN}reboot${C_RESET} / ${C_GREEN}poweroff${C_RESET}
+    Flush storage buffers and restart or halt machine safely.
+
+${C_YELLOW}NETWORKING & INTERNET COMMANDS:${C_RESET}
+  ${C_GREEN}wifi${C_RESET}
+    Open the Wi-Fi Quick Settings dialog to view connected network,
+    signal strength, link frequency (5.0 GHz / 2.4 GHz), and channel.
+  ${C_GREEN}wifi scan${C_RESET}
+    Perform live scan of surrounding wireless access points.
+  ${C_GREEN}wifi connect <ssid>${C_RESET}
+    Connect to a wireless network by SSID.
+  ${C_GREEN}ping <host>${C_RESET}
+    Send ICMP Echo requests to verify internet connectivity.
+    Example: ping -c 3 google.com
+  ${C_GREEN}ifconfig${C_RESET}
+    Display active network interfaces (eth0, lo), IP, netmask, and MAC.
+  ${C_GREEN}net${C_RESET}
+    Network status overview showing gateway, DNS, and connection state.
+  ${C_GREEN}diagnostics${C_RESET}
+    Automated network health checks and DNS resolution tests.
+
+${C_YELLOW}STORAGE & FILE SYSTEM:${C_RESET}
+  ${C_GREEN}disks${C_RESET}
+    List detected physical storage devices (SATA, IDE, NVMe, USB).
+  ${C_GREEN}df -h${C_RESET}
+    Display mounted filesystem disk usage in human-readable units.
+  ${C_GREEN}free${C_RESET}
+    Display total, used, and available physical RAM.
+  ${C_GREEN}mount <dev> <dir>${C_RESET} / ${C_GREEN}unmount <dir>${C_RESET}
+    Safely mount and unmount block devices.
+
+${C_YELLOW}PACKAGE MANAGEMENT & STORE:${C_RESET}
+  ${C_GREEN}apt status${C_RESET}
+    Inspect package manager state and database readiness.
+  ${C_GREEN}apt search <pkg>${C_RESET}
+    Search package repository for available software.
+  ${C_GREEN}apt install <pkg>${C_RESET}
+    Download and install software package.
+  ${C_GREEN}snap${C_RESET} (or ${C_GREEN}store${C_RESET})
+    Open MicroOS Snap Software Center frontend.
+
+${C_YELLOW}RETRO ARCADE GAMES (OFFLINE):${C_RESET}
+  ${C_GREEN}arcade${C_RESET} (or ${C_GREEN}games${C_RESET})
+    Launch Micro Arcade hub featuring 8 classic offline C games:
+    ${C_CYAN}snake${C_RESET}         - Classic Snake (WASD / Arrows)
+    ${C_CYAN}tetris${C_RESET}        - Falling blocks puzzle (A/D/W/S)
+    ${C_CYAN}pong${C_RESET}          - Table tennis paddle bounce
+    ${C_CYAN}mines${C_RESET}         - Minesweeper grid puzzle
+    ${C_CYAN}2048${C_RESET}          - 2048 sliding number merge
+    ${C_CYAN}guess${C_RESET}         - Number guessing game
+    ${C_CYAN}tictactoe${C_RESET}     - Tic-Tac-Toe vs Minimax AI
+    ${C_CYAN}spaceinvaders${C_RESET} - ASCII Space Invaders shooter
+
+${C_YELLOW}HARDWARE DISCOVERY:${C_RESET}
+  ${C_GREEN}hardware${C_RESET}              - Complete device audit
+  ${C_GREEN}hardware cpu${C_RESET}          - CPU architecture, cores, and frequency
+  ${C_GREEN}hardware memory${C_RESET}       - RAM capacity and memory controller
+  ${C_GREEN}hardware network${C_RESET}      - Network adapter & Wi-Fi controller specs
+  ${C_GREEN}hardware pci${C_RESET}          - Enumerate PCI/PCIe bus devices
+EOF
+}
+
+show_command_help() {
+    cmd="$1"
+    case "$cmd" in
+        wifi)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: wifi -- MicroOS Wireless Network Controller
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Manages physical wireless hardware (Realtek RTL8852BE WiFi 6),
+  scans surrounding 802.11 access points, and handles connections.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}wifi${C_RESET}                   Open interactive Wi-Fi manager
+  ${C_GREEN}wifi scan${C_RESET}              Scan for nearby wireless networks
+  ${C_GREEN}wifi connect <ssid>${C_RESET}    Connect to specified network SSID
+  ${C_GREEN}wifi status${C_RESET}            Show current Wi-Fi link, signal & channel
+  ${C_GREEN}wifi disconnect${C_RESET}        Disconnect from current network
+
+${C_YELLOW}EXAMPLES:${C_RESET}
+  wifi
+  wifi scan
+  wifi connect Jain_Student
+EOF
+            ;;
+        ping)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: ping -- Test Network & Internet Connectivity
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Sends ICMP ECHO_REQUEST packets to network hosts to measure
+  round-trip latency and packet loss.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}ping <host>${C_RESET}           Ping target continuously (Ctrl+C to stop)
+  ${C_GREEN}ping -c <count> <host>${C_RESET} Send specified number of packets
+
+${C_YELLOW}EXAMPLES:${C_RESET}
+  ping -c 3 google.com
+  ping -c 4 10.0.2.2
+  ping -c 2 8.8.8.8
+EOF
+            ;;
+        desktop|gui)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: desktop (or gui) -- MicroOS Multitasking Desktop UI
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Launches the full graphical desktop environment featuring floating
+  windows, mouse navigation, application launchers, and status dock.
+
+${C_YELLOW}SHORTCUT KEYS:${C_RESET}
+  ${C_GREEN}w${C_RESET}         Open Wi-Fi Quick Settings
+  ${C_GREEN}t${C_RESET}         Open Developer Terminal Shell
+  ${C_GREEN}m${C_RESET}         Open System Performance Monitor
+  ${C_GREEN}g / k${C_RESET}     Launch Retro Arcade / Snake
+  ${C_GREEN}b${C_RESET}         Open Web Browser
+  ${C_GREEN}1, 2, 3, 4${C_RESET} Switch Virtual Workspaces
+  ${C_GREEN}Esc${C_RESET}       Close active window
+  ${C_GREEN}Ctrl+Q${C_RESET}    Exit Desktop to Terminal Shell
+EOF
+            ;;
+        arcade|games)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: arcade -- MicroOS Retro Games Suite
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Interactive retro arcade hub with 8 classic C games running 100%
+  offline with ncurses terminal rendering.
+
+${C_YELLOW}AVAILABLE GAMES:${C_RESET}
+  ${C_GREEN}snake${C_RESET}         Classic Snake (WASD / Arrows)
+  ${C_GREEN}tetris${C_RESET}        Tetris falling tetromino puzzle
+  ${C_GREEN}pong${C_RESET}          Table tennis paddle bounce
+  ${C_GREEN}mines${C_RESET}         Minesweeper grid sweeper
+  ${C_GREEN}2048${C_RESET}          2048 number merge puzzle
+  ${C_GREEN}guess${C_RESET}         Number guessing challenge
+  ${C_GREEN}tictactoe${C_RESET}     Tic-Tac-Toe vs Minimax AI
+  ${C_GREEN}spaceinvaders${C_RESET} ASCII Space Invaders arcade shooter
+EOF
+            ;;
+        apt)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: apt -- APT Package Manager Frontend
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Front-end for querying and managing software packages in MicroOS.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}apt status${C_RESET}             Check package database readiness
+  ${C_GREEN}apt search <pkg>${C_RESET}       Search package repository
+  ${C_GREEN}apt install <pkg>${C_RESET}      Install software package
+  ${C_GREEN}apt update${C_RESET}             Refresh package indices
+EOF
+            ;;
+        net|ifconfig)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: net / ifconfig -- Network Configuration
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Displays network adapters, DHCP lease info, default route, and DNS.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}ifconfig${C_RESET}               List network interfaces and IP addresses
+  ${C_GREEN}net${C_RESET}                    Show routing table, gateway, and DNS servers
+  ${C_GREEN}diagnostics${C_RESET}            Run automated network self-tests
+EOF
+            ;;
+        disks|storage)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: disks -- Storage & Partition Manager
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Enumerates block storage devices, disk partitions, and filesystem types.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}disks${C_RESET}                  List all detected storage drives
+  ${C_GREEN}disks info${C_RESET}             Detailed partition geometry
+  ${C_GREEN}df -h${C_RESET}                  Show mounted filesystem capacity
+  ${C_GREEN}mount <dev> <dir>${C_RESET}     Mount partition
+  ${C_GREEN}unmount <dir>${C_RESET}         Safely unmount partition
+EOF
+            ;;
+        hardware)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: hardware -- Hardware Discovery & Device Audit
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Inspects physical CPU, memory, PCI controllers, USB buses, and network devices.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}hardware${C_RESET}              Complete hardware inventory
+  ${C_GREEN}hardware cpu${C_RESET}          Processor architecture & frequency
+  ${C_GREEN}hardware memory${C_RESET}       RAM capacity & memory layout
+  ${C_GREEN}hardware network${C_RESET}      Network adapters & Wi-Fi controller
+  ${C_GREEN}hardware pci${C_RESET}          PCI/PCIe bus scan
+EOF
+            ;;
+        sysinfo|dashboard)
+            cat <<EOF
+${C_CYAN}======================================================================
+COMMAND: sysinfo / dashboard -- System Telemetry
+======================================================================${C_RESET}
+${C_YELLOW}DESCRIPTION:${C_RESET}
+  Displays operating system health, kernel build, CPU usage, and memory load.
+
+${C_YELLOW}SYNTAX:${C_RESET}
+  ${C_GREEN}sysinfo${C_RESET}                Fast console summary of OS status
+  ${C_GREEN}dashboard${C_RESET}              Interactive Windows/macOS-style Control Center
+EOF
+            ;;
+        reboot|restart)
+            echo "Usage: reboot - Cleanly flushes buffers and restarts the machine."
+            ;;
+        poweroff|shutdown)
+            echo "Usage: poweroff - Safely unmounts filesystems and powers off hardware."
+            ;;
+        clear|cls)
+            echo "Usage: clear (or cls) - Clears the terminal screen."
+            ;;
+        *)
+            echo "${C_RED}[ERROR] No dedicated manual found for '$cmd'.${C_RESET}"
+            echo ""
+            echo "Available command manuals:"
+            echo "  wifi, ping, desktop, arcade, apt, net, disks, hardware, sysinfo"
+            echo ""
+            echo "Type ${C_CYAN}help${C_RESET} for the general command reference."
+            return 1
+            ;;
+    esac
+}
+
+case "$1" in
+    all|--all|-a)
+        if [ -t 1 ] && [ -x /usr/bin/more ]; then
+            show_full_help | /usr/bin/more
+        else
+            show_full_help
+        fi
+        ;;
+    "")
+        show_compact_help
+        ;;
+    *)
+        show_command_help "$1"
+        ;;
+esac

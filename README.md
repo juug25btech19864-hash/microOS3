@@ -22,6 +22,15 @@ It delivers two production bootable editions:
 
 ---
 
+## 🌐 Live Interactive Web Desktop (Instant Browser Access)
+
+Experience the complete MicroOS multitasking desktop environment right now without any installation:
+* **🚀 Launch Live Cloud Desktop:** [https://huggingface.co/spaces/Srivas369/microOS3](https://huggingface.co/spaces/Srivas369/microOS3)
+* **📺 Direct Fullscreen Mode:** [https://srivas369-microos3.hf.space](https://srivas369-microos3.hf.space)
+* **📖 Complete Access & Command Guide:** [DESKTOP_ACCESS.md](DESKTOP_ACCESS.md)
+
+---
+
 ## 💾 Downloads & Artifacts
 
 | Component | Format | Size | Description | Download Link |

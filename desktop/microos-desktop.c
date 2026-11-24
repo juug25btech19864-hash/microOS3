@@ -171,7 +171,7 @@ static int current_workspace = 1;
 static int selected_icon = 0;
 static volatile int running = 1;
 static volatile int need_redraw = 1;
-static char wifi_ssid[64] = "MOJO-JAN-C1-F9";
+static char wifi_ssid[64] = "iQOO Neo 10R";
 static int wifi_scanning = 0;
 
 /* Windows */
@@ -630,12 +630,12 @@ static void draw_wifi_dialog(WinState *w)
         int ch;
         int mbps;
     } nets[7] = {
-        { "MOJO-JAN-C1-F9",      82, "WPA2-Personal",  "5.0 GHz (ax)",  48, 1201 },
-        { "MOJO-JAN-C1-F8",      77, "WPA2-Personal",  "2.4 GHz (ax)",   2,  144 },
-        { "Mojo-JAN-B-F9",       67, "WPA2-Personal",  "5.0 GHz (ax)",  40,  866 },
-        { "Galaxy A15 5G 64F1",  65, "WPA2-Personal",  "2.4 GHz (ac)",   6,  144 },
-        { "S21 FE",              64, "WPA2-Personal",  "2.4 GHz (ac)",   1,  144 },
-        { "MOJO-F2",             62, "WPA2-Personal",  "2.4 GHz (ax)",   8,  144 },
+        { "iQOO Neo 10R",        90, "WPA2-Personal",  "5.0 GHz (ac)",  48,  867 },
+        { "MOJO-JAN-C1-F9",      85, "WPA2-Personal",  "5.0 GHz (ax)",  48, 1201 },
+        { "MOJO-JAN-C1-F8",      76, "WPA2-Personal",  "2.4 GHz (ax)",   2,  144 },
+        { "OPPO F29 Pro 5G",     69, "WPA3-Personal",  "2.4 GHz (ac)",   2,  144 },
+        { "Mojo-Jan-B-F4",       64, "WPA2-Personal",  "2.4 GHz (ax)",   3,  144 },
+        { "MOJO-JAN-B-F7",       64, "WPA2-Personal",  "2.4 GHz (ax)",   9,  144 },
         { "MOJO-JAN-B-F6",       62, "WPA2-Personal",  "2.4 GHz (ax)",   1,  144 },
     };
 
@@ -837,27 +837,27 @@ static void build_wifi(char *buf, int sz)
         "        IP Address     : %s\n"
         "        Security Type  : WPA2-Enterprise / PEAP-MSCHAPv2\n\n"
         "AVAILABLE NETWORKS (7 in range):\n"
-        "  [1] ((o)) MOJO-JAN-C1-F9    %s\n"
-        "  [2] ((o)) MOJO-JAN-C1-F8    %s\n"
-        "  [3] ((o)) Mojo-JAN-B-F9     %s\n"
-        "  [4] ((o)) Galaxy A15 5G     %s\n"
-        "  [5] ((o)) S21 FE            %s\n"
-        "  [6] ((o)) MOJO-F2           %s\n"
-        "  [7] ((o)) MOJO-JAN-B-F6     %s\n\n"
+        "  [1] ((o)) iQOO Neo 10R     %s\n"
+        "  [2] ((o)) MOJO-JAN-C1-F9   %s\n"
+        "  [3] ((o)) MOJO-JAN-C1-F8   %s\n"
+        "  [4] ((o)) OPPO F29 Pro 5G  %s\n"
+        "  [5] ((o)) Mojo-Jan-B-F4    %s\n"
+        "  [6] ((o)) MOJO-JAN-B-F7    %s\n"
+        "  [7] ((o)) MOJO-JAN-B-F6    %s\n\n"
         "ACTIONS: Press [1-7] Connect | [d] Disconnect | [r] Rescan | [Esc] Close\n",
         connected ? "ACTIVE & ENABLED" : "RADIO IDLE",
         connected ? wifi_ssid : "No Network Connected",
         connected ? "CONNECTED, SECURED" : "DISCONNECTED",
-        connected ? "[==========] 82% (-67 dBm, Optimal)" : "[..........] 0% (Offline)",
-        connected ? "1201.0 Mbps / 960.5 Mbps Full Duplex" : "0.0 Mbps",
-        connected ? "172.16.0.103 (Gateway: 172.16.0.1  DNS: 8.8.8.8)" : "0.0.0.0",
-        (strcmp(wifi_ssid, "MOJO-JAN-C1-F9") == 0) ? "[Connected] [####] 82%  5.0 GHz  Secured" : "[In Range]  [####] 82%  5.0 GHz  Secured",
-        (strcmp(wifi_ssid, "MOJO-JAN-C1-F8") == 0) ? "[Connected] [####] 77%  2.4 GHz  WPA2"    : "[In Range]  [####] 77%  2.4 GHz  WPA2",
-        (strcmp(wifi_ssid, "Mojo-JAN-B-F9") == 0)  ? "[Connected] [###.] 67%  5.0 GHz  WPA2"    : "[In Range]  [###.] 67%  5.0 GHz  WPA2",
-        (strcmp(wifi_ssid, "Galaxy A15 5G 64F1") == 0) ? "[Connected] [###.] 65%  2.4 GHz  WPA2" : "[In Range]  [###.] 65%  2.4 GHz  WPA2",
-        (strcmp(wifi_ssid, "S21 FE") == 0)         ? "[Connected] [###.] 64%  2.4 GHz  WPA2"    : "[In Range]  [###.] 64%  2.4 GHz  WPA2",
-        (strcmp(wifi_ssid, "MOJO-F2") == 0)        ? "[Connected] [###.] 62%  2.4 GHz  WPA2"    : "[In Range]  [###.] 62%  2.4 GHz  WPA2",
-        (strcmp(wifi_ssid, "MOJO-JAN-B-F6") == 0)  ? "[Connected] [###.] 62%  2.4 GHz  WPA2"    : "[In Range]  [###.] 62%  2.4 GHz  WPA2");
+        connected ? "[==========] 90% (-37 dBm, Optimal)" : "[..........] 0% (Offline)",
+        connected ? "866.7 Mbps / 866.7 Mbps Full Duplex" : "0.0 Mbps",
+        connected ? "10.130.118.26 (Gateway: 10.130.118.1  DNS: 8.8.8.8)" : "0.0.0.0",
+        (strcmp(wifi_ssid, "iQOO Neo 10R") == 0)    ? "[Connected] [####] 90%  5.0 GHz  Secured" : "[In Range]  [####] 90%  5.0 GHz  Secured",
+        (strcmp(wifi_ssid, "MOJO-JAN-C1-F9") == 0)  ? "[Connected] [####] 85%  5.0 GHz  WPA2"    : "[In Range]  [####] 85%  5.0 GHz  WPA2",
+        (strcmp(wifi_ssid, "MOJO-JAN-C1-F8") == 0)  ? "[Connected] [####] 76%  2.4 GHz  WPA2"    : "[In Range]  [####] 76%  2.4 GHz  WPA2",
+        (strcmp(wifi_ssid, "OPPO F29 Pro 5G") == 0) ? "[Connected] [###.] 69%  2.4 GHz  WPA3"    : "[In Range]  [###.] 69%  2.4 GHz  WPA3",
+        (strcmp(wifi_ssid, "Mojo-Jan-B-F4") == 0)   ? "[Connected] [###.] 64%  2.4 GHz  WPA2"    : "[In Range]  [###.] 64%  2.4 GHz  WPA2",
+        (strcmp(wifi_ssid, "MOJO-JAN-B-F7") == 0)   ? "[Connected] [###.] 64%  2.4 GHz  WPA2"    : "[In Range]  [###.] 64%  2.4 GHz  WPA2",
+        (strcmp(wifi_ssid, "MOJO-JAN-B-F6") == 0)   ? "[Connected] [###.] 62%  2.4 GHz  WPA2"    : "[In Range]  [###.] 62%  2.4 GHz  WPA2");
 }
 
 static void build_sysmon(char *buf, int sz)
@@ -1312,8 +1312,8 @@ static void handle_mouse(MEVENT *ev)
                 }
             }
             static const char *net_names[] = {
-                "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8", "Mojo-JAN-B-F9",
-                "Galaxy A15 5G 64F1", "S21 FE", "MOJO-F2", "MOJO-JAN-B-F6"
+                "iQOO Neo 10R", "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8",
+                "OPPO F29 Pro 5G", "Mojo-Jan-B-F4", "MOJO-JAN-B-F7", "MOJO-JAN-B-F6"
             };
             /* Network rows at w->y + 8 to w->y + 14 */
             for (int i = 0; i < 7; i++) {
@@ -1389,8 +1389,8 @@ static void handle_input(int ch)
             wins[focused_win].scroll += 3;
         else if (wins[focused_win].type == APP_WIFI) {
             static const char *net_names[] = {
-                "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8", "Mojo-JAN-B-F9",
-                "Galaxy A15 5G 64F1", "S21 FE", "MOJO-F2", "MOJO-JAN-B-F6"
+                "iQOO Neo 10R", "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8",
+                "OPPO F29 Pro 5G", "Mojo-Jan-B-F4", "MOJO-JAN-B-F7", "MOJO-JAN-B-F6"
             };
             if (ch >= '1' && ch <= '7') {
                 strncpy(wifi_ssid, net_names[ch - '1'], sizeof(wifi_ssid) - 1);
@@ -1402,7 +1402,7 @@ static void handle_input(int ch)
                 need_redraw = 1;
                 return;
             } else if (ch == 'c' || ch == 'C') {
-                strncpy(wifi_ssid, "MOJO-JAN-C1-F9", sizeof(wifi_ssid) - 1);
+                strncpy(wifi_ssid, "iQOO Neo 10R", sizeof(wifi_ssid) - 1);
                 FILE *wf = fopen("/run/wifi.state", "w");
                 if (wf) { fputs(wifi_ssid, wf); fclose(wf); }
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));

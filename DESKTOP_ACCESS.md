@@ -64,7 +64,7 @@ When booting the MicroOS ISO image in VirtualBox:
   * Default 4-packet auto-terminating `ping` diagnostic with latency statistics (`seq=0..3`).
   * Instant manual and command lookup via `help` and `help <topic>` (e.g., `help wifi`, `help ping`, `help arcade`).
 * **Wireless Network Manager**:
-  * Pre-configured live Wi-Fi profile (`MOJO-JAN-C1-F9`, Wi-Fi 6 802.11ax, 1201 Mbps).
+  * Pre-configured live Wi-Fi profile (`iQOO Neo 10R`, 5 GHz, 866.7 Mbps, 90% Signal).
   * Interactive scan showing surrounding 2.4 GHz and 5 GHz networks with signal strength indicators.
 * **Retro Arcade Gaming Suite**:
   * 8 offline built-in C arcade games: Snake, Tetris, Pong, Minesweeper, 2048, Tic-Tac-Toe, Guess, and Space Invaders.

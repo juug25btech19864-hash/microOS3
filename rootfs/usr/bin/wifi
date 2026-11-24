@@ -25,7 +25,7 @@ if [ ! -f "$STATE_FILE" ]; then
     if [ -f /etc/wifi_ssid ]; then
         cp /etc/wifi_ssid "$STATE_FILE"
     else
-        echo "MOJO-JAN-C1-F9" > "$STATE_FILE"
+        echo "iQOO Neo 10R" > "$STATE_FILE"
     fi
 fi
 
@@ -35,12 +35,12 @@ get_current_ssid() {
     elif [ -f /etc/wifi_ssid ]; then
         cat /etc/wifi_ssid
     else
-        echo "MOJO-JAN-C1-F9"
+        echo "iQOO Neo 10R"
     fi
 }
 
 get_current_ip() {
-    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "172.16.0.103"
+    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "10.130.118.26"
 }
 
 get_wifi_interface() {
@@ -55,12 +55,12 @@ get_wifi_interface() {
 }
 
 # Real networks catalog (synchronized with host Realtek RTL8852BE Wi-Fi adapter)
-NETWORKS="MOJO-JAN-C1-F9|82|5 GHz|WPA2-Personal|1201 Mbps|50:91:e3:75:8b:27|Connected
-MOJO-JAN-C1-F8|77|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:4e|Available
-Mojo-JAN-B-F9|67|5 GHz|WPA2-Personal|866 Mbps|50:91:e3:75:86:32|Available
-Galaxy A15 5G 64F1|65|2.4 GHz|WPA2-Personal|144 Mbps|c6:59:f6:0f:9e:36|Available
-S21 FE|64|2.4 GHz|WPA2-Personal|144 Mbps|c6:33:16:e2:c8:5f|Available
-MOJO-F2|62|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:bb:d2|Available
+NETWORKS="iQOO Neo 10R|90|5 GHz|WPA2-Personal|866.7 Mbps|16:cf:bd:d4:db:1b|Connected
+MOJO-JAN-C1-F9|85|5 GHz|WPA2-Personal|1201 Mbps|56:91:e3:75:8b:27|Available
+MOJO-JAN-C1-F8|76|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:4e|Available
+OPPO F29 Pro 5G 232d|69|2.4 GHz|WPA3-Personal|144 Mbps|1a:59:9f:6a:a5:0d|Available
+Mojo-Jan-B-F4|64|2.4 GHz|WPA2-Personal|144 Mbps|50:91:e3:75:8a:ee|Available
+MOJO-JAN-B-F7|64|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:8a|Available
 MOJO-JAN-B-F6|62|2.4 GHz|WPA2-Personal|144 Mbps|50:91:e3:75:7b:ca|Available"
 
 get_signal_bar() {
@@ -149,15 +149,15 @@ wifi_connect() {
 
     if [ -z "$target" ]; then
         wifi_scan
-        printf "Enter network number [1-6] or SSID to connect: "
+        printf "Enter network number [1-7] or SSID to connect: "
         read -r choice
         case "$choice" in
-            1) target="MOJO-JAN-C1-F9" ;;
-            2) target="MOJO-JAN-C1-F8" ;;
-            3) target="Mojo-JAN-B-F9" ;;
-            4) target="Galaxy A15 5G 64F1" ;;
-            5) target="S21 FE" ;;
-            6) target="MOJO-F2" ;;
+            1) target="iQOO Neo 10R" ;;
+            2) target="MOJO-JAN-C1-F9" ;;
+            3) target="MOJO-JAN-C1-F8" ;;
+            4) target="OPPO F29 Pro 5G 232d" ;;
+            5) target="Mojo-Jan-B-F4" ;;
+            6) target="MOJO-JAN-B-F7" ;;
             7) target="MOJO-JAN-B-F6" ;;
             *) target="$choice" ;;
         esac

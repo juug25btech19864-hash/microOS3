@@ -1,13 +1,13 @@
 MicroOS Build Information
 =========================
 Release Version:     MicroOS v2.0
-Build Timestamp:     2026-11-24T02:29:59Z
+Build Timestamp:     2026-11-24T02:47:37Z
 Architecture:        x86_64
 Firmware Support:    Dual Hybrid (BIOS / MBR El Torito & UEFI x86_64)
 Kernel Version:      Linux 7.0.0-43-generic
-Initramfs Size:      5262092 bytes
+Initramfs Size:      5262150 bytes
 Kernel Size:         17349000 bytes
 Total ISO Size:      33116160 bytes (31 MB)
 Hard Size Budget:    50,000,000 bytes (50 MB)
 Budget Remaining:    16883840 bytes
-SHA256 Checksum:     2efa7a7eaa85541bab56e0ff0c289c1031e3940ff70d485413a46cb00d551427
+SHA256 Checksum:     4064785707916bdc2910feb924ebed9db305dfe6d9843daad812c7b0fc440d95

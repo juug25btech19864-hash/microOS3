@@ -42,6 +42,9 @@ quit() {
 heip() {
     /usr/bin/help "$@"
 }
+deskstop() {
+    /usr/bin/desktop "$@"
+}
 
 alias ping='/usr/bin/ping'
 alias help='/usr/bin/help'
@@ -49,6 +52,7 @@ alias heip='/usr/bin/help'
 alias hlep='/usr/bin/help'
 alias hlpe='/usr/bin/help'
 alias halp='/usr/bin/help'
+alias deskstop='desktop'
 alias commands='/usr/bin/help'
 alias '?'='/usr/bin/help'
 alias cls='clear'

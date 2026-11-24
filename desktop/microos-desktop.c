@@ -171,7 +171,7 @@ static int current_workspace = 1;
 static int selected_icon = 0;
 static volatile int running = 1;
 static volatile int need_redraw = 1;
-static char wifi_ssid[64] = "iQOO Neo 10R";
+static char wifi_ssid[64] = "Jain_Student";
 static int wifi_scanning = 0;
 
 /* Windows */
@@ -630,13 +630,13 @@ static void draw_wifi_dialog(WinState *w)
         int ch;
         int mbps;
     } nets[7] = {
-        { "iQOO Neo 10R",        90, "WPA2-Personal",  "5.0 GHz (ac)",  48,  867 },
-        { "MOJO-JAN-C1-F9",      85, "WPA2-Personal",  "5.0 GHz (ax)",  48, 1201 },
-        { "MOJO-JAN-C1-F8",      76, "WPA2-Personal",  "2.4 GHz (ax)",   2,  144 },
-        { "OPPO F29 Pro 5G",     69, "WPA3-Personal",  "2.4 GHz (ac)",   2,  144 },
-        { "Mojo-Jan-B-F4",       64, "WPA2-Personal",  "2.4 GHz (ax)",   3,  144 },
-        { "MOJO-JAN-B-F7",       64, "WPA2-Personal",  "2.4 GHz (ax)",   9,  144 },
-        { "MOJO-JAN-B-F6",       62, "WPA2-Personal",  "2.4 GHz (ax)",   1,  144 },
+        { "Jain_Student",        89, "Open (Campus)",  "5.0 GHz (ac)", 149,  400 },
+        { "iQOO Neo 10R",        94, "WPA2-Personal",  "2.4 GHz (ac)",   1,  144 },
+        { "Jain_Employee",       87, "802.1X (Ent)",   "5.0 GHz (ax)", 136,  400 },
+        { "vivo Y56 5G",         62, "WPA2-Personal",  "5.0 GHz (ax)",  44,  400 },
+        { "NARZO 70 Pro 5G",     88, "WPA3-Personal",  "5.0 GHz (ax)",  40,  400 },
+        { "Nord CE5",            64, "WPA3-Personal",  "5.0 GHz (ax)",  36,  400 },
+        { "DIRECT-MCMAYAANKmsFO",82, "WPA2-Personal",  "5.0 GHz (ax)",  36,  400 },
     };
 
     /* Status text inside box */
@@ -660,7 +660,7 @@ static void draw_wifi_dialog(WinState *w)
 
         attron(COLOR_PAIR(C_WIN_WHITE_BG));
         mvprintw(box_y + 2, wx + 4, "Link: %d Mbps | %s | Ch: %d", mbps, freq, ch);
-        mvprintw(box_y + 3, wx + 4, "IPv4: 10.0.2.15/24 | GW: 10.0.2.2 | DNS: 10.0.2.3");
+        mvprintw(box_y + 3, wx + 4, "IPv4: 10.0.2.15/24 (Host: 172.20.252.230) | GW: 172.20.192.1");
         attroff(COLOR_PAIR(C_WIN_WHITE_BG));
     } else {
         attron(COLOR_PAIR(C_WIN_CLOSE_BTN) | A_BOLD);
@@ -1312,8 +1312,8 @@ static void handle_mouse(MEVENT *ev)
                 }
             }
             static const char *net_names[] = {
-                "iQOO Neo 10R", "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8",
-                "OPPO F29 Pro 5G", "Mojo-Jan-B-F4", "MOJO-JAN-B-F7", "MOJO-JAN-B-F6"
+                "Jain_Student", "iQOO Neo 10R", "Jain_Employee",
+                "vivo Y56 5G", "NARZO 70 Pro 5G", "Nord CE5", "DIRECT-MCMAYAANKmsFO"
             };
             /* Network rows at w->y + 8 to w->y + 14 */
             for (int i = 0; i < 7; i++) {
@@ -1389,8 +1389,8 @@ static void handle_input(int ch)
             wins[focused_win].scroll += 3;
         else if (wins[focused_win].type == APP_WIFI) {
             static const char *net_names[] = {
-                "iQOO Neo 10R", "MOJO-JAN-C1-F9", "MOJO-JAN-C1-F8",
-                "OPPO F29 Pro 5G", "Mojo-Jan-B-F4", "MOJO-JAN-B-F7", "MOJO-JAN-B-F6"
+                "Jain_Student", "iQOO Neo 10R", "Jain_Employee",
+                "vivo Y56 5G", "NARZO 70 Pro 5G", "Nord CE5", "DIRECT-MCMAYAANKmsFO"
             };
             if (ch >= '1' && ch <= '7') {
                 strncpy(wifi_ssid, net_names[ch - '1'], sizeof(wifi_ssid) - 1);
@@ -1402,7 +1402,7 @@ static void handle_input(int ch)
                 need_redraw = 1;
                 return;
             } else if (ch == 'c' || ch == 'C') {
-                strncpy(wifi_ssid, "iQOO Neo 10R", sizeof(wifi_ssid) - 1);
+                strncpy(wifi_ssid, "Jain_Student", sizeof(wifi_ssid) - 1);
                 FILE *wf = fopen("/run/wifi.state", "w");
                 if (wf) { fputs(wifi_ssid, wf); fclose(wf); }
                 build_wifi(wins[focused_win].content, sizeof(wins[focused_win].content));

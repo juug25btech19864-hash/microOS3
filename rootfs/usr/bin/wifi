@@ -25,7 +25,7 @@ if [ ! -f "$STATE_FILE" ]; then
     if [ -f /etc/wifi_ssid ]; then
         cp /etc/wifi_ssid "$STATE_FILE"
     else
-        echo "iQOO Neo 10R" > "$STATE_FILE"
+        echo "Jain_Student" > "$STATE_FILE"
     fi
 fi
 
@@ -35,12 +35,12 @@ get_current_ssid() {
     elif [ -f /etc/wifi_ssid ]; then
         cat /etc/wifi_ssid
     else
-        echo "iQOO Neo 10R"
+        echo "Jain_Student"
     fi
 }
 
 get_current_ip() {
-    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "10.130.118.26"
+    ip addr show | grep -o 'inet [0-9.]*' | grep -v '127.0.0.1' | head -1 | awk '{print $2}' || echo "172.20.252.230"
 }
 
 get_wifi_interface() {
@@ -55,13 +55,13 @@ get_wifi_interface() {
 }
 
 # Real networks catalog (synchronized with host Realtek RTL8852BE Wi-Fi adapter)
-NETWORKS="iQOO Neo 10R|90|5 GHz|WPA2-Personal|866.7 Mbps|16:cf:bd:d4:db:1b|Connected
-MOJO-JAN-C1-F9|85|5 GHz|WPA2-Personal|1201 Mbps|56:91:e3:75:8b:27|Available
-MOJO-JAN-C1-F8|76|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:4e|Available
-OPPO F29 Pro 5G 232d|69|2.4 GHz|WPA3-Personal|144 Mbps|1a:59:9f:6a:a5:0d|Available
-Mojo-Jan-B-F4|64|2.4 GHz|WPA2-Personal|144 Mbps|50:91:e3:75:8a:ee|Available
-MOJO-JAN-B-F7|64|2.4 GHz|WPA2-Personal|144 Mbps|3c:52:a1:05:b8:8a|Available
-MOJO-JAN-B-F6|62|2.4 GHz|WPA2-Personal|144 Mbps|50:91:e3:75:7b:ca|Available"
+NETWORKS="Jain_Student|89|5 GHz|Open (Campus)|400 Mbps|80:bc:37:8d:63:ec|Connected
+iQOO Neo 10R|94|2.4 GHz|WPA2-Personal|144 Mbps|3e:05:cd:71:27:7c|Available
+Jain_Employee|87|5 GHz|802.1X (Ent)|400 Mbps|c8:a6:08:b8:62:00|Available
+vivo Y56 5G|62|5 GHz|WPA2-Personal|400 Mbps|72:2c:40:81:9a:5a|Available
+NARZO 70 Pro 5G|88|5 GHz|WPA3-Personal|400 Mbps|ba:3f:43:23:3f:93|Available
+Nord CE5|64|5 GHz|WPA3-Personal|400 Mbps|ce:d3:da:ab:31:0f|Available
+DIRECT-MCMAYAANKmsFO|82|5 GHz|WPA2-Personal|400 Mbps|1a:b5:cd:14:61:d1|Available"
 
 get_signal_bar() {
     sig=$1
@@ -152,13 +152,13 @@ wifi_connect() {
         printf "Enter network number [1-7] or SSID to connect: "
         read -r choice
         case "$choice" in
-            1) target="iQOO Neo 10R" ;;
-            2) target="MOJO-JAN-C1-F9" ;;
-            3) target="MOJO-JAN-C1-F8" ;;
-            4) target="OPPO F29 Pro 5G 232d" ;;
-            5) target="Mojo-Jan-B-F4" ;;
-            6) target="MOJO-JAN-B-F7" ;;
-            7) target="MOJO-JAN-B-F6" ;;
+            1) target="Jain_Student" ;;
+            2) target="iQOO Neo 10R" ;;
+            3) target="Jain_Employee" ;;
+            4) target="vivo Y56 5G" ;;
+            5) target="NARZO 70 Pro 5G" ;;
+            6) target="Nord CE5" ;;
+            7) target="DIRECT-MCMAYAANKmsFO" ;;
             *) target="$choice" ;;
         esac
     fi
@@ -232,7 +232,7 @@ wifi_menu() {
                 echo "  Virtual Guest Dev: Intel PRO/1000 MT Gigabit Ethernet (e1000)"
                 echo "  Driver:            e1000 / iwlwifi / r8169 native support"
                 echo "  MAC Address:       c0:35:32:6e:30:55 (Guest: 08:00:27:e1:bf:64)"
-                echo "  Current Band:      5 GHz (Channel 44, 802.11ac)"
+                echo "  Current Band:      5 GHz (Channel 149, 802.11ac)"
                 echo "  Link Rate:         866.7 Mbps"
                 echo "  Operating State:   UP / CONNECTED"
                 echo ""

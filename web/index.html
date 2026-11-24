@@ -1357,15 +1357,15 @@ srivas@microos:~$ </div>
 
     /* 6. Wi-Fi Manager Logic — AUTO-DETECT from Windows host via /api/wifi */
     let networks = [
-      { name: "iQOO Neo 10R", signal: 90, band: "5 GHz", bandFull: "5 GHz (802.11ac) Ch: 48", sec: "WPA2-Personal", rate: "866.7 Mbps / 866.7 Mbps Full Duplex", dbm: "-37 dBm, Optimal", ip: "10.130.118.26 (Gateway: 10.130.118.1)" },
-      { name: "MOJO-JAN-C1-F9", signal: 85, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 48", sec: "WPA2-Personal", rate: "1201.0 Mbps", dbm: "-56 dBm, Good", ip: null },
-      { name: "MOJO-JAN-C1-F8", signal: 76, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 2", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-64 dBm", ip: null },
-      { name: "OPPO F29 Pro 5G", signal: 69, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ac) Ch: 2", sec: "WPA3-Personal", rate: "144.4 Mbps", dbm: "-65 dBm", ip: null },
-      { name: "Mojo-Jan-B-F4", signal: 64, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 3", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-66 dBm", ip: null },
-      { name: "MOJO-JAN-B-F7", signal: 64, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 9", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-66 dBm", ip: null },
-      { name: "MOJO-JAN-B-F6", signal: 62, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ax) Ch: 1", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-69 dBm", ip: null }
+      { name: "Jain_Student", signal: 89, band: "5 GHz", bandFull: "5 GHz (802.11ac) Ch: 149", sec: "Open (Campus)", rate: "400.0 Mbps Full Duplex", dbm: "-47 dBm, Optimal", ip: "172.20.252.230 (Gateway: 172.20.192.1)" },
+      { name: "iQOO Neo 10R", signal: 94, band: "2.4 GHz", bandFull: "2.4 GHz (802.11ac) Ch: 1", sec: "WPA2-Personal", rate: "144.4 Mbps", dbm: "-42 dBm", ip: null },
+      { name: "Jain_Employee", signal: 87, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 136", sec: "802.1X (Enterprise)", rate: "400.0 Mbps", dbm: "-51 dBm", ip: null },
+      { name: "vivo Y56 5G", signal: 62, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 44", sec: "WPA2-Personal", rate: "400.0 Mbps", dbm: "-68 dBm", ip: null },
+      { name: "NARZO 70 Pro 5G", signal: 88, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 40", sec: "WPA3-Personal", rate: "400.0 Mbps", dbm: "-48 dBm", ip: null },
+      { name: "Nord CE5", signal: 64, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 36", sec: "WPA3-Personal", rate: "400.0 Mbps", dbm: "-66 dBm", ip: null },
+      { name: "DIRECT-MCMAYAANKmsFO", signal: 82, band: "5 GHz", bandFull: "5 GHz (802.11ax) Ch: 36", sec: "WPA2-Personal", rate: "400.0 Mbps", dbm: "-55 dBm", ip: null }
     ];
-    let currentConnected = "iQOO Neo 10R";
+    let currentConnected = "Jain_Student";
 
     function sigColor(sig) { return sig > 70 ? '#00e676' : sig > 50 ? '#ff9100' : '#ff5252'; }
 
